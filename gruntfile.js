@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function (grunt) {
-
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('package.json'),
@@ -13,11 +12,6 @@ module.exports = function (grunt) {
             ' * Licence:       <%= pkg.license %>\n' +
             ' *******************************************************/\n',
 
-    csslint: {
-      demo: {
-        src: "demo/demo.css"
-      }
-    },
     /**************************************************
     *  Validate files with JSHint
     *  https://github.com/gruntjs/grunt-contrib-jshint
@@ -61,6 +55,30 @@ module.exports = function (grunt) {
           'dist/ng-knob.min.js': 'src/ng-knob.js'
         }
       }
+    },
+    /**************************************************
+    *  CSS autoprefixer
+    *  https://github.com/nDmitry/grunt-autoprefixer
+    ***************************************************/
+    autoprefixer: {
+      options: {
+        browsers: ["last 2 version"]
+      },
+      demo: {
+        src: 'demo/demo.css'
+      },
+    },
+    /**************************************************
+    *  Lint CSS files with csslint
+    *  https://github.com/gruntjs/grunt-contrib-csslint
+    ***************************************************/
+    csslint: {
+      options: {
+        import: 2
+      },
+      demo: {
+        src: "demo/demo.css"
+      }
     }
   });
 
@@ -73,6 +91,6 @@ module.exports = function (grunt) {
   /**************************************************
   *  Register task
   ***************************************************/
-  grunt.registerTask('default', ['jshint', 'uglify', 'csslint']);
+  grunt.registerTask('default', ['jshint', 'uglify', 'autoprefixer', 'csslint']);
 
 };
