@@ -1,0 +1,27 @@
+{
+  "name": "ng-knob",
+  "version": "0.1.0",
+  "description": "Angular.js Knob directive",
+  "main": "gruntfile.js",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-csslint": "^0.5.0",
+    "grunt-contrib-uglify": "^0.11.0",
+    "load-grunt-tasks": "^3.3.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "authors": [
+    "RadMie <radoslaw.mietkiewicz@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "d3",
+    "control",
+    "ui",
+    "gauge",
+    "knob"
+  ]
+}
