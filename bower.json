@@ -1,0 +1,28 @@
+{
+  "name": "ng-knob",
+  "version": "0.1.0",
+  "authors": [
+    "RadMie <radoslaw.mietkiewicz@gmail.com>"
+  ],
+  "description": "Angular.js Knob directive",
+  "keywords": [
+    "angular",
+    "d3",
+    "control",
+    "ui",
+    "gauge",
+    "knob"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.4.x",
+    "d3": "^3.5.x"
+  }
+}
