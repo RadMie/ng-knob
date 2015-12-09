@@ -5,9 +5,12 @@ angular.module('KnobDemoApp', ['ui.knob'])
     $scope.value = 65;
     $scope.options = {
       skin: 'simple',               //(default: "simple")
-      animate: true,                //(default: "true")
-      animateDuration: 1000,        //(default: "1000")
-      size: 200,                    //(default: "240")
+      animate: {
+        enabled: true,              //(default: true)
+        duration: 1000,             //(default: 1000)
+        ease: 'bounce'              //(default: 'bounce')
+      },
+      size: 200,                    //(default: "200")
       startAngle: 0,                //(default: "0")
       endAngle: 360,                //(default: "360")
       offsetAngle: 0,               //(default: "0")

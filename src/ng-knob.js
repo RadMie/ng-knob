@@ -10,7 +10,7 @@
     this.options = options;
     this.inDrag = false;
 
-    this.offset = 100;
+    this.offset = options.size / 2;
   };
 
   Knob.prototype.createArcs = function() {
@@ -64,7 +64,7 @@
 
     drawArc(that.interactArc, 'interactArc', clickInteraction, dragBehavior);
 
-    if (that.options.animate) {
+    if (that.options.animate.enabled) {
       animate(that.valueToRadians(that.options.startAngle, 360), that.valueToRadians(that.value, 100, that.options.endAngle, that.options.startAngle));
     } else {
       that.changeArc.endAngle(this.valueToRadians(this.value, 100, this.options.endAngle, this.options.startAngle));
@@ -72,12 +72,13 @@
       that.valueArc.endAngle(this.valueToRadians(this.value, 100, this.options.endAngle, this.options.startAngle));
       valueElem.attr('d', that.valueArc);
     }
-
-    svg.append('text')
-    .attr('class', 'text')
-    .attr('id', 'text')
-    .text(that.value+"%")
-    .attr('transform', 'translate(' + (that.offset-12) + ', ' + (that.offset+2) + ')');
+    if(that.options.displayInput) {
+      svg.append('text')
+      .attr('class', 'text')
+      .attr('id', 'text')
+      .text(that.value+"%")
+      .attr('transform', 'translate(' + (that.offset-12) + ', ' + (that.offset+2) + ')');
+    }
 
     function drawArc(arc, label, click, drag) {
       var elem = svg.append('path')
@@ -102,8 +103,8 @@
 
       valueElem
       .transition()
-      .ease('bounce')
-      .duration(that.options.animateDuration)
+      .ease(that.options.animate.ease)
+      .duration(that.options.animate.duration)
       .tween('',function() {
         var i = d3.interpolate(start,end);
         return function(t) {
@@ -146,7 +147,9 @@
           that.changeArc.endAngle(that.valueToRadians(that.value, 100, that.options.endAngle, that.options.startAngle));
           d3.select(that.element).select('#changeArc').attr('d', that.changeArc);
         }
-        d3.select(that.element).select('#text').text(that.value+"%");
+        if(that.options.displayInput) {
+          d3.select(that.element).select('#text').text(that.value+"%");
+        }
       }
     }
   };
@@ -159,7 +162,9 @@
       d3.select(this.element).select('#changeArc').attr('d', this.changeArc);
       this.valueArc.endAngle(radians);
       d3.select(this.element).select('#valueArc').attr('d', this.valueArc);
-      d3.select(this.element).select('#text').text(newValue+"%");
+      if(that.options.displayInput) {
+        d3.select(this.element).select('#text').text(newValue+"%");
+      }
     }
   };
 
@@ -176,8 +181,11 @@
         scope.value = scope.value || 0;
         var defaultOptions = {
           skin: 'simple',
-          animate: true,
-          animateDuration: 1000,
+          animate: {
+            enabled: true,
+            duration: 1000,
+            ease: 'bounce'
+          },
           size: 200,
           startAngle: 0,
           endAngle: 360,
