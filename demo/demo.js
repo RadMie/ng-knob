@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('KnobDemoApp')
+angular.module('KnobDemoApp', ['ui.knob'])
   .controller('knobCtrl', function ($scope) {
     $scope.value = 65;
     $scope.options = {
