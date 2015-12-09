@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width; initial-scale=1; maximum-scale=1">
+    <meta name="viewport" content="width=device-width">
     <title>Angular.js Knob directive</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/flatly/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="demo.css" type="text/css">
@@ -29,6 +29,10 @@
         <h1>ng-knob</h1>
         <p>Angular.js Knob directive</p>
         <p><a class="btn btn-primary btn-lg">Learn more</a></p>
+      </div>
+
+      <div ng-controller="knobCtrl">
+        <ui-knob value="value" options="options"></ui-knob>
       </div>
       
     </div>
