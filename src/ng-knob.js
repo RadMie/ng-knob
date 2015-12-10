@@ -70,20 +70,44 @@
    */
   Knob.prototype.createArcs = function(skin) {
     var outerRadius = parseInt((this.options.size / 2), 10),
-        innerRadius = outerRadius - this.options.thickness,
-        startAngle = this.valueToRadians(this.options.startAngle, 360);
+        startAngle = this.valueToRadians(this.options.startAngle, 360),
+        endAngle = this.valueToRadians(this.options.endAngle, 360),
 
-    if(skin === "simple") {
-      this.changeArc = this.createArc(innerRadius, outerRadius, startAngle, startAngle);
-      this.valueArc = this.createArc(innerRadius, outerRadius, startAngle, startAngle);
-      this.interactArc = this.createArc(innerRadius, outerRadius, startAngle, this.valueToRadians(this.options.endAngle, 360));
+        trackInnerRadius = outerRadius - this.options.trackWidth,
+        changeInnerRadius = outerRadius - this.options.barWidth,
+        valueInnerRadius = outerRadius - this.options.barWidth,
+        interactInnerRadius = outerRadius - this.options.barWidth,
 
-    } else if (skin === "tron") {
-      this.hoopArc = this.createArc(outerRadius * 0.95, outerRadius, startAngle, this.valueToRadians(this.options.endAngle, 360));
-      this.changeArc = this.createArc(innerRadius, (outerRadius * 0.95) - (outerRadius * 0.05), startAngle, startAngle);
-      this.valueArc = this.createArc(innerRadius, (outerRadius * 0.95) - (outerRadius * 0.05), startAngle, startAngle);
-      this.interactArc = this.createArc(innerRadius, (outerRadius * 0.95) - (outerRadius * 0.05), startAngle, this.valueToRadians(this.options.endAngle, 360));
+        trackOuterRadius = outerRadius,
+        changeOuterRadius = outerRadius,
+        valueOuterRadius = outerRadius,
+        interactOuterRadius = outerRadius;
+
+    if(this.options.barWidth > this.options.trackWidth) {
+      var diff = (this.options.barWidth - this.options.trackWidth) / 2;
+      trackInnerRadius -= diff;
+      trackOuterRadius -= diff;
+    } else if(this.options.barWidth < this.options.trackWidth) {
+      var diff = (this.options.trackWidth - this.options.barWidth) / 2;
+      changeOuterRadius -= diff;
+      valueOuterRadius -= diff;
+      changeInnerRadius -= diff;
+      valueInnerRadius -= diff;
+      interactInnerRadius = outerRadius - this.options.trackWidth;
     }
+
+    if(skin === "tron") {
+      trackOuterRadius = (trackOuterRadius * 0.95) - (trackOuterRadius * 0.05);
+      changeOuterRadius = (changeOuterRadius * 0.95) - (changeOuterRadius * 0.05);
+      valueOuterRadius = (valueOuterRadius * 0.95) - (valueOuterRadius * 0.05);
+      interactOuterRadius = (interactOuterRadius * 0.95) - (interactOuterRadius * 0.05);
+      this.hoopArc = this.createArc(outerRadius * 0.95, outerRadius, startAngle, endAngle);
+    }
+
+    this.trackArc = this.createArc(trackInnerRadius, trackOuterRadius, startAngle, endAngle);
+    this.changeArc = this.createArc(changeInnerRadius, changeOuterRadius, startAngle, startAngle);
+    this.valueArc = this.createArc(valueInnerRadius, valueOuterRadius, startAngle, startAngle);
+    this.interactArc = this.createArc(interactInnerRadius, interactOuterRadius, startAngle, endAngle);
   };
   /**
    *   Draw the arcs
@@ -103,17 +127,13 @@
       .text(this.value + this.options.unit || "")
       .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.05)) + ')');
     }
-    if(skin === "simple") {
-      this.changeElem = this.drawArc(svg,this.changeArc, 'changeArc', {"fill": "black", "fill-opacity": 0.2});
-      this.valueElem = this.drawArc(svg,this.valueArc, 'valueArc', {"fill": "red", "fill-opacity": 0.5});
-      this.drawArc(svg,this.interactArc, 'interactArc', {"fill": "red", "fill-opacity": 0.1, "cursor": "pointer"}, clickInteraction, dragBehavior);
-
-    } else if (skin === "tron") {
+    if (skin === "tron") {
       this.drawArc(svg, this.hoopArc, 'hoopArc', {"fill": "black", "fill-opacity": 0.8});
+    }
+      this.drawArc(svg, this.trackArc, 'trackArc', {"fill": "red", "fill-opacity": 0.1});
       this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', {"fill": "black", "fill-opacity": 0.2});
       this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', {"fill": "red", "fill-opacity": 0.5});
-      this.drawArc(svg, this.interactArc, 'interactArc', {"fill": "red", "fill-opacity": 0.1, "cursor": "pointer"}, clickInteraction, dragBehavior);
-    }
+      this.drawArc(svg, this.interactArc, 'interactArc', {"fill": "white", "fill-opacity": 0, "cursor": "pointer"}, clickInteraction, dragBehavior);
   };
   /**
    *   Draw knob component
@@ -223,19 +243,15 @@
           size: 200,
           startAngle: 0,
           endAngle: 360,
-          offsetAngle: 0,
-          readOnly: false,
-          fgColor: '#543',
-          bgColor: '#345',
-          textColor: '#000',
-          thickness: 50,
+          unit: "%",
           displayInput: true,
-          unit: false,
-          step: 1,
-          min: 0,
-          max: 100,
-          lineCap: 'simple',
-          displayPrevious: true,
+          readOnly: false,
+          trackWidth: 50,
+          barWidth: 50,
+          trackColor: "#453",
+          barColor: "#345",
+          prevBarColor: "#000",
+          textColor: '#222',
 				};
         scope.options = angular.extend(defaultOptions, scope.options);
         var knob = new ui.Knob(element[0], scope.value, scope.options);
