@@ -97,9 +97,11 @@
     if(this.options.displayInput) {
       svg.append('text')
       .attr('class', 'text')
-      .style({"fill": this.options.textColor})
+      .attr("text-anchor", "middle")
+      .attr("font-size", (this.options.size*0.2) + "px")
+      .style("fill", this.options.textColor)
       .text(this.value + this.options.unit || "")
-      .attr('transform', 'translate(' + ((this.options.size / 2) - 12) + ', ' + ((this.options.size / 2) + 2) + ')');
+      .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.05)) + ')');
     }
     if(skin === "simple") {
       this.changeElem = this.drawArc(svg,this.changeArc, 'changeArc', {"fill": "black", "fill-opacity": 0.2});
