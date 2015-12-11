@@ -97,7 +97,9 @@
       valueInnerRadius -= diff;
       interactInnerRadius = outerRadius - this.options.trackWidth;
     }
-
+    if(this.options.bgColor) {
+      this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
+    }
     if(skin === 'tron') {
       trackOuterRadius = (trackOuterRadius * 0.95) - (trackOuterRadius * 0.05);
       changeOuterRadius = (changeOuterRadius * 0.95) - (changeOuterRadius * 0.05);
@@ -119,6 +121,10 @@
     .append('svg')
     .attr("width", this.options.size)
     .attr("height", this.options.size);
+
+    if(this.options.bgColor) {
+      this.drawArc(svg, this.bgArc, 'bgArc', { "fill": this.options.bgColor });
+    }
 
     if(this.options.displayInput) {
       var fontSize = (this.options.size*0.15) + "px";
@@ -276,7 +282,8 @@
           fontSize: 'auto',
           subText: {
             enabled: false
-          }
+          },
+          bgColor: false
 				};
         scope.options = angular.extend(defaultOptions, scope.options);
         var knob = new ui.Knob(element[0], scope.value, scope.options);
