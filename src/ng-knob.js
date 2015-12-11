@@ -37,12 +37,13 @@
   /**
    *   Create the arc
    */
-  Knob.prototype.createArc = function(innerRadius, outerRadius, startAngle, endAngle) {
+  Knob.prototype.createArc = function(innerRadius, outerRadius, startAngle, endAngle, cornerRadius) {
     var arc = d3.svg.arc()
     .innerRadius(innerRadius)
     .outerRadius(outerRadius)
     .startAngle(startAngle)
-    .endAngle(endAngle);
+    .endAngle(endAngle)
+    .cornerRadius(cornerRadius);
     return arc;
   };
   /**
@@ -105,8 +106,8 @@
     }
 
     this.trackArc = this.createArc(trackInnerRadius, trackOuterRadius, startAngle, endAngle);
-    this.changeArc = this.createArc(changeInnerRadius, changeOuterRadius, startAngle, startAngle);
-    this.valueArc = this.createArc(valueInnerRadius, valueOuterRadius, startAngle, startAngle);
+    this.changeArc = this.createArc(changeInnerRadius, changeOuterRadius, startAngle, startAngle, this.options.barCap);
+    this.valueArc = this.createArc(valueInnerRadius, valueOuterRadius, startAngle, startAngle, this.options.barCap);
     this.interactArc = this.createArc(interactInnerRadius, interactOuterRadius, startAngle, endAngle);
   };
   /**
@@ -130,9 +131,9 @@
     if (skin === "tron") {
       this.drawArc(svg, this.hoopArc, 'hoopArc', {"fill": "black", "fill-opacity": 0.8});
     }
-      this.drawArc(svg, this.trackArc, 'trackArc', {"fill": "red", "fill-opacity": 0.1});
-      this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', {"fill": "black", "fill-opacity": 0.2});
-      this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', {"fill": "red", "fill-opacity": 0.5});
+      this.drawArc(svg, this.trackArc, 'trackArc', { "fill": this.options.trackColor });
+      this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill": this.options.prevBarColor });
+      this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', { "fill": this.options.barColor });
       this.drawArc(svg, this.interactArc, 'interactArc', {"fill": "white", "fill-opacity": 0, "cursor": "pointer"}, clickInteraction, dragBehavior);
   };
   /**
@@ -248,10 +249,11 @@
           readOnly: false,
           trackWidth: 50,
           barWidth: 50,
-          trackColor: "#453",
-          barColor: "#345",
-          prevBarColor: "#000",
+          trackColor: "rgba(255,0,0,.1)",
+          barColor: "rgba(255,0,0,.5)",
+          prevBarColor: "rgba(0,0,0,.2)",
           textColor: '#222',
+          barCap: 0
 				};
         scope.options = angular.extend(defaultOptions, scope.options);
         var knob = new ui.Knob(element[0], scope.value, scope.options);
