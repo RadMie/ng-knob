@@ -291,6 +291,7 @@
       radians = ((delta-that.options.startAngle) + arc) * (Math.PI/180);
       that.value = that.radiansToValue(radians, 100, that.options.endAngle, that.options.startAngle);
       if(that.value >= 0 && that.value <= 100) {
+        that.value = Math.round(((~~ (((that.value < 0) ? -0.5 : 0.5) + (that.value/that.options.step))) * that.options.step) * 100) / 100;
         update(that.value);
         that.valueArc.endAngle(that.valueToRadians(that.value, 100, that.options.endAngle, that.options.startAngle));
         d3.select(that.element).select('.valueArc').attr('d', that.valueArc);
@@ -310,7 +311,7 @@
   Knob.prototype.setValue = function(newValue) {
     if ((!this.inDrag) && this.value >= 0 && this.value <= 100) {
       var radians = this.valueToRadians(newValue, 100, this.options.endAngle, this.options.startAngle);
-      this.value = newValue;
+      this.value = Math.round(((~~ (((newValue < 0) ? -0.5 : 0.5) + (newValue/this.options.step))) * this.options.step) * 100) / 100;
       this.changeArc.endAngle(radians);
       d3.select(this.element).select('.changeArc').attr('d', this.changeArc);
       this.valueArc.endAngle(radians);
@@ -369,7 +370,8 @@
             width: 4,
             quantity: 30,
             height: 5
-          }
+          },
+          step: 1
 				};
         scope.options = angular.merge(defaultOptions, scope.options);
         var knob = new ui.Knob(element[0], scope.value, scope.options);
