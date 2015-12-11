@@ -132,6 +132,20 @@
       .style("fill", this.options.textColor)
       .text(this.value + this.options.unit || "")
       .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.05)) + ')');
+
+      if(this.options.subText.enabled) {
+        fontSize = (this.options.size*0.07) + "px";
+        if(this.options.subText.font !== 'auto') {
+          fontSize = this.options.subText.font + "px";
+        }
+        svg.append('text')
+        .attr('class', 'sub-text')
+        .attr("text-anchor", "middle")
+        .attr("font-size", fontSize)
+        .style("fill", this.options.subText.color)
+        .text(this.options.subText.text)
+        .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.14)) + ')');
+      }
     }
     if (skin === 'tron') {
       this.drawArc(svg, this.hoopArc, 'hoopArc', { "fill": this.options.barColor });
@@ -259,7 +273,10 @@
           prevBarColor: "rgba(0,0,0,.2)",
           textColor: '#222',
           barCap: 0,
-          fontSize: 'auto'
+          fontSize: 'auto',
+          subText: {
+            enabled: false
+          }
 				};
         scope.options = angular.extend(defaultOptions, scope.options);
         var knob = new ui.Knob(element[0], scope.value, scope.options);
