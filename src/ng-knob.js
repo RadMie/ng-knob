@@ -75,7 +75,11 @@
     endAngle = this.valueToRadians(this.options.endAngle, 360);
 
     if(this.options.scale.enabled) {
+      if(this.options.scale.type === 'dots') {
         outerRadius -= (this.options.scale.width * 2) + this.options.scale.width;
+      } else if (this.options.scale.type === 'lines') {
+        outerRadius -= this.options.scale.height + (Math.log(this.options.scale.height)*4);
+      }
     }
     var trackInnerRadius = outerRadius - this.options.trackWidth,
     changeInnerRadius = outerRadius - this.options.barWidth,
@@ -161,11 +165,11 @@
         var width = this.options.scale.width,
         radius = (this.options.size / 2) - width,
         quantity = this.options.scale.quantity,
-        count = 1 / quantity,
+        count = 0,
         offset = radius + this.options.scale.width,
         angle = 0,
         data = d3.range(quantity).map(function () {
-          angle = count * Math.PI * 2;
+          angle = (count * Math.PI * 2) - (Math.PI / 2);
           count = count + (1 / quantity);
           return {
             cx: offset + Math.cos(angle) * radius,
@@ -187,6 +191,40 @@
               return d.cy;
           },
           fill: this.options.scale.color
+        });
+      } else if (this.options.scale.type === 'lines') {
+        var height = this.options.scale.height,
+        radius = (this.options.size / 2),
+        quantity = this.options.scale.quantity,
+        count = 0, angle = 0,
+        data = d3.range(quantity).map(function () {
+          angle = (count * Math.PI * 2) - (Math.PI / 2);
+          count = count + (1 / quantity);
+          return {
+            x1: radius + Math.cos(angle) * radius,
+            y1: radius + Math.sin(angle) * radius,
+            x2: radius + Math.cos(angle) * (radius - height),
+            y2: radius + Math.sin(angle) * (radius - height)
+          };
+        });
+        svg.selectAll("line")
+        .data(data)
+        .enter().append("line")
+        .attr({
+          x1: function (d) {
+              return d.x1;
+          },
+          y1: function (d) {
+              return d.y1;
+          },
+          x2: function (d) {
+              return d.x2;
+          },
+          y2: function (d) {
+              return d.y2;
+          },
+          "stroke-width": this.options.scale.width,
+          "stroke": this.options.scale.color
         });
       }
     }
@@ -318,14 +356,22 @@
           barCap: 0,
           fontSize: 'auto',
           subText: {
-            enabled: false
+            enabled: false,
+            text: "",
+            color: "gray",
+            font: "auto"
           },
           bgColor: false,
           scale: {
-            enabled: false
+            enabled: false,
+            type: 'lines',
+            color: 'gray',
+            width: 4,
+            quantity: 30,
+            height: 5
           }
 				};
-        scope.options = angular.extend(defaultOptions, scope.options);
+        scope.options = angular.merge(defaultOptions, scope.options);
         var knob = new ui.Knob(element[0], scope.value, scope.options);
 
         scope.$watch('value', function(newValue, oldValue) {
