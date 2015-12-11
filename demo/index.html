@@ -27,11 +27,14 @@
     <div class="container">
       <div class="jumbotron">
         <h1>ng-knob</h1>
-        <p>Angular.js Knob directive</p>
+        <p>Angular.js directive to Knob component powered by d3.js</p>
         <p><a class="btn btn-primary btn-lg">Learn more</a></p>
       </div>
 
-      <div ng-controller="knobCtrl">
+      <div ng-controller="knobCtrl1">
+        <ui-knob value="value" options="options"></ui-knob>
+      </div>
+      <div ng-controller="knobCtrl2">
         <ui-knob value="value" options="options"></ui-knob>
       </div>
 
