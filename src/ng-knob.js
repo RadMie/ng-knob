@@ -82,14 +82,15 @@
         trackOuterRadius = outerRadius,
         changeOuterRadius = outerRadius,
         valueOuterRadius = outerRadius,
-        interactOuterRadius = outerRadius;
+        interactOuterRadius = outerRadius,
+        diff;
 
     if(this.options.barWidth > this.options.trackWidth) {
-      var diff = (this.options.barWidth - this.options.trackWidth) / 2;
+      diff = (this.options.barWidth - this.options.trackWidth) / 2;
       trackInnerRadius -= diff;
       trackOuterRadius -= diff;
     } else if(this.options.barWidth < this.options.trackWidth) {
-      var diff = (this.options.trackWidth - this.options.barWidth) / 2;
+      diff = (this.options.trackWidth - this.options.barWidth) / 2;
       changeOuterRadius -= diff;
       valueOuterRadius -= diff;
       changeInnerRadius -= diff;
@@ -97,7 +98,7 @@
       interactInnerRadius = outerRadius - this.options.trackWidth;
     }
 
-    if(skin === "tron") {
+    if(skin === 'tron') {
       trackOuterRadius = (trackOuterRadius * 0.95) - (trackOuterRadius * 0.05);
       changeOuterRadius = (changeOuterRadius * 0.95) - (changeOuterRadius * 0.05);
       valueOuterRadius = (valueOuterRadius * 0.95) - (valueOuterRadius * 0.05);
@@ -120,21 +121,25 @@
     .attr("height", this.options.size);
 
     if(this.options.displayInput) {
+      var fontSize = (this.options.size*0.15) + "px";
+      if(this.options.fontSize !== 'auto') {
+        fontSize = this.options.fontSize + "px";
+      }
       svg.append('text')
       .attr('class', 'text')
       .attr("text-anchor", "middle")
-      .attr("font-size", (this.options.size*0.2) + "px")
+      .attr("font-size", fontSize)
       .style("fill", this.options.textColor)
       .text(this.value + this.options.unit || "")
       .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.05)) + ')');
     }
-    if (skin === "tron") {
-      this.drawArc(svg, this.hoopArc, 'hoopArc', {"fill": "black", "fill-opacity": 0.8});
+    if (skin === 'tron') {
+      this.drawArc(svg, this.hoopArc, 'hoopArc', { "fill": this.options.barColor });
     }
       this.drawArc(svg, this.trackArc, 'trackArc', { "fill": this.options.trackColor });
       this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill": this.options.prevBarColor });
       this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', { "fill": this.options.barColor });
-      this.drawArc(svg, this.interactArc, 'interactArc', {"fill": "white", "fill-opacity": 0, "cursor": "pointer"}, clickInteraction, dragBehavior);
+      this.drawArc(svg, this.interactArc, 'interactArc', { "fill-opacity": 0, "cursor": "pointer" }, clickInteraction, dragBehavior);
   };
   /**
    *   Draw knob component
@@ -253,7 +258,8 @@
           barColor: "rgba(255,0,0,.5)",
           prevBarColor: "rgba(0,0,0,.2)",
           textColor: '#222',
-          barCap: 0
+          barCap: 0,
+          fontSize: 'auto'
 				};
         scope.options = angular.extend(defaultOptions, scope.options);
         var knob = new ui.Knob(element[0], scope.value, scope.options);
