@@ -71,19 +71,22 @@
    */
   Knob.prototype.createArcs = function(skin) {
     var outerRadius = parseInt((this.options.size / 2), 10),
-        startAngle = this.valueToRadians(this.options.startAngle, 360),
-        endAngle = this.valueToRadians(this.options.endAngle, 360),
+    startAngle = this.valueToRadians(this.options.startAngle, 360),
+    endAngle = this.valueToRadians(this.options.endAngle, 360);
 
-        trackInnerRadius = outerRadius - this.options.trackWidth,
-        changeInnerRadius = outerRadius - this.options.barWidth,
-        valueInnerRadius = outerRadius - this.options.barWidth,
-        interactInnerRadius = outerRadius - this.options.barWidth,
+    if(this.options.scale.enabled) {
+        outerRadius -= (this.options.scale.width * 2) + this.options.scale.width;
+    }
+    var trackInnerRadius = outerRadius - this.options.trackWidth,
+    changeInnerRadius = outerRadius - this.options.barWidth,
+    valueInnerRadius = outerRadius - this.options.barWidth,
+    interactInnerRadius = outerRadius - this.options.barWidth,
 
-        trackOuterRadius = outerRadius,
-        changeOuterRadius = outerRadius,
-        valueOuterRadius = outerRadius,
-        interactOuterRadius = outerRadius,
-        diff;
+    trackOuterRadius = outerRadius,
+    changeOuterRadius = outerRadius,
+    valueOuterRadius = outerRadius,
+    interactOuterRadius = outerRadius,
+    diff;
 
     if(this.options.barWidth > this.options.trackWidth) {
       diff = (this.options.barWidth - this.options.trackWidth) / 2;
@@ -153,13 +156,47 @@
         .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.14)) + ')');
       }
     }
-    if (skin === 'tron') {
+    if(this.options.scale.enabled) {
+      if(this.options.scale.type === 'dots') {
+        var width = this.options.scale.width,
+        radius = (this.options.size / 2) - width,
+        quantity = this.options.scale.quantity,
+        count = 1 / quantity,
+        offset = radius + this.options.scale.width,
+        angle = 0,
+        data = d3.range(quantity).map(function () {
+          angle = count * Math.PI * 2;
+          count = count + (1 / quantity);
+          return {
+            cx: offset + Math.cos(angle) * radius,
+            cy: offset + Math.sin(angle) * radius,
+            r: width
+          };
+        });
+        svg.selectAll("circle")
+        .data(data)
+        .enter().append("circle")
+        .attr({
+          r: function (d) {
+              return d.r;
+          },
+          cx: function (d) {
+              return d.cx;
+          },
+          cy: function (d) {
+              return d.cy;
+          },
+          fill: this.options.scale.color
+        });
+      }
+    }
+    if(skin === 'tron') {
       this.drawArc(svg, this.hoopArc, 'hoopArc', { "fill": this.options.barColor });
     }
-      this.drawArc(svg, this.trackArc, 'trackArc', { "fill": this.options.trackColor });
-      this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill": this.options.prevBarColor });
-      this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', { "fill": this.options.barColor });
-      this.drawArc(svg, this.interactArc, 'interactArc', { "fill-opacity": 0, "cursor": "pointer" }, clickInteraction, dragBehavior);
+    this.drawArc(svg, this.trackArc, 'trackArc', { "fill": this.options.trackColor });
+    this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill": this.options.prevBarColor });
+    this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', { "fill": this.options.barColor });
+    this.drawArc(svg, this.interactArc, 'interactArc', { "fill-opacity": 0, "cursor": "pointer" }, clickInteraction, dragBehavior);
   };
   /**
    *   Draw knob component
@@ -283,7 +320,10 @@
           subText: {
             enabled: false
           },
-          bgColor: false
+          bgColor: false,
+          scale: {
+            enabled: false
+          }
 				};
         scope.options = angular.extend(defaultOptions, scope.options);
         var knob = new ui.Knob(element[0], scope.value, scope.options);
