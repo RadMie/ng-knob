@@ -5,3 +5,16 @@ pre {
   border: none;
   color: #2c3e50;
 }
+.table-bordered {
+    border-color: #2C3E50;
+}
+.table-bordered > thead > tr {
+  background-color: #2C3E50;
+  color: #ecf0f1;
+}
+.table-bordered > thead > tr > th {
+  border-color: #2C3E50;
+}
+.table-bordered > tbody > tr > td {
+  border-color: #2C3E50;
+}
