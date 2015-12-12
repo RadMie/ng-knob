@@ -230,7 +230,7 @@
       this.drawArc(svg, this.hoopArc, 'hoopArc', { "fill": this.options.barColor });
     }
     this.drawArc(svg, this.trackArc, 'trackArc', { "fill": this.options.trackColor });
-    if(this.options.displayPrevious){
+    if(this.options.displayPrevious) {
       this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill": this.options.prevBarColor });
     } else {
       this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill-opacity": 0 });
@@ -350,7 +350,7 @@
           size: 200,
           startAngle: 0,
           endAngle: 360,
-          unit: "%",
+          unit: "",
           displayInput: true,
           readOnly: false,
           trackWidth: 50,
@@ -367,7 +367,7 @@
             color: "gray",
             font: "auto"
           },
-          bgColor: false,
+          bgColor: '',
           scale: {
             enabled: false,
             type: 'lines',
