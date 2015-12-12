@@ -15,7 +15,7 @@
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -26,8 +26,10 @@
           <ul class="nav navbar-nav" role="tablist">
             <li class="hidden"><a href="#page-top"></a></li>
             <li><a href="#examples">Examples</a></li>
+            <li><a href="#features">Features</a></li>
             <li><a href="#getstarted">Get started</a></li>
             <li><a href="#options">Options</a></li>
+            <li><a href="#contributing">Contributing</a></li>
           </ul>
         </div>
       </div>
@@ -39,7 +41,7 @@
         <div class="jumbotron">
           <h1>ng-knob</h1>
           <p>Angular.js directive to Knob component powered by d3.js (without jQuery)</p>
-          <p><a class="btn btn-primary btn-lg">Download</a> <a href="https://github.com/RadMie/ng-knob" target="_blank" class="btn btn-primary btn-lg">View on GitHub</a></p>
+          <p><a class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Download</a> <a href="https://github.com/RadMie/ng-knob" target="_blank" class="btn btn-primary btn-lg">View on GitHub</a></p>
         </div>
       </div>
     </section>
@@ -66,6 +68,35 @@
           </div>
         </div>
 
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+      <div class="container">
+        <h1>Features</h1>
+        <ul>
+          <li>very easy to implement</li>
+          <li>without jQuery dependencies</li>
+          <li>powered by d3.js</li>
+          <li>2-way data binding</li>
+          <li>configurable minimum, maximum values and step</li>
+          <li>animated</li>
+          <li>shows previous value</li>
+          <li>tiny - 8.8kb minified</li>
+          <li>great ability to configure</li>
+          <li>configurable scale</li>
+          <li>touch, click and drag events implemented</li>
+        </ul>
+        <h4>Dependencies</h4>
+        <ul>
+          <li><strong>AngularJS</strong> (tested with 1.4.x although it probably works with older versions)</li>
+          <li><strong>D3.js</strong> (tested with 3.5.x although it probably works with older versions)</li>
+        </ul>
+        <h4>Browser Support</h4>
+        <ul>
+          <li>Chrome, Firefox, Safari, Opera, IE9+</li>
+        </ul>
       </div>
     </section>
 
@@ -261,6 +292,21 @@ app.controller('knobCtrl', function ($scope) {
         </div>
       </div>
     </section>
+    <!-- Contributing Section -->
+    <section id="contributing" class="contributing-section">
+      <div class="container">
+        <h1>Contributing</h1>
+        <ol>
+          <li>Fork the repo</li>
+          <li>Install dependencies: <code>npm install</code> and <code>bower install</code></li>
+          <li>Make your changes</li>
+          <li>Run: <code>grunt</code></li>
+          <li>Submit pull request</li>
+        </ol>
+
+      </div>
+    </section>
+
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script>
