@@ -5,6 +5,12 @@
     "RadMie <radoslaw.mietkiewicz@gmail.com>"
   ],
   "description": "Angular.js Knob directive",
+  "main": "dist/ng-knob.js",
+  "homepage": "https://radmie.github.io/ng-knob",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/RadMie/ng-knob.git"
+  },
   "keywords": [
     "angular",
     "d3",
