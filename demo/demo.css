@@ -18,3 +18,9 @@ pre {
 .table-bordered > tbody > tr > td {
   border-color: #2C3E50;
 }
+footer {
+  height: 60px;
+  background-color: #2C3E50;
+  padding: 20px 0;
+  margin-top: 40px
+}
