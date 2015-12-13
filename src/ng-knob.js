@@ -159,13 +159,12 @@
       }
     }
     if(this.options.scale.enabled) {
+      var radius, quantity, count = 0, angle = 0, data;
       if(this.options.scale.type === 'dots') {
-        var width = this.options.scale.width,
-        radius = (this.options.size / 2) - width,
-        quantity = this.options.scale.quantity,
-        count = 0,
-        offset = radius + this.options.scale.width,
-        angle = 0,
+        var width = this.options.scale.width;
+        radius = (this.options.size / 2) - width;
+        quantity = this.options.scale.quantity;
+        var offset = radius + this.options.scale.width;
         data = d3.range(quantity).map(function () {
           angle = (count * Math.PI * 2) - (Math.PI / 2);
           count = count + (1 / quantity);
@@ -191,10 +190,9 @@
           fill: this.options.scale.color
         });
       } else if (this.options.scale.type === 'lines') {
-        var height = this.options.scale.height,
-        radius = (this.options.size / 2),
-        quantity = this.options.scale.quantity,
-        count = 0, angle = 0,
+        var height = this.options.scale.height;
+        radius = (this.options.size / 2);
+        quantity = this.options.scale.quantity;
         data = d3.range(quantity).map(function () {
           angle = (count * Math.PI * 2) - (Math.PI / 2);
           count = count + (1 / quantity);
