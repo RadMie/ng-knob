@@ -40,7 +40,8 @@ module.exports = function (grunt) {
         options: {
           banner: '<%= banner %>',
           mangle: false,
-          beautify: true
+          beautify: true,
+          compress: false
         },
         files: {
           'dist/ng-knob.js': 'src/ng-knob.js'
@@ -79,9 +80,23 @@ module.exports = function (grunt) {
       demo: {
         src: "demo/demo.css"
       }
+    },
+    /**************************************************
+    *  Connect web server
+    *  https://github.com/gruntjs/grunt-contrib-connect
+    ***************************************************/
+    connect: {
+      server: {
+        options: {
+          open: true,
+          port: 9000,
+          debug: true,
+          keepalive: true,
+          base: './'
+        }
+      }
     }
   });
-
   /**************************************************
   *  Load multiple grunt tasks
   *  https://github.com/sindresorhus/load-grunt-tasks
@@ -91,6 +106,6 @@ module.exports = function (grunt) {
   /**************************************************
   *  Register task
   ***************************************************/
-  grunt.registerTask('default', ['jshint', 'uglify', 'autoprefixer', 'csslint']);
+  grunt.registerTask('default', ['jshint', 'uglify', 'autoprefixer', 'csslint', 'connect']);
 
 };

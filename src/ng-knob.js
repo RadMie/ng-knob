@@ -290,11 +290,9 @@
       }
       radians = ((delta-that.options.startAngle) + arc) * (Math.PI/180);
       that.value = that.radiansToValue(radians, that.options.max, that.options.min, that.options.endAngle, that.options.startAngle);
-      console.log(that.value);
       if(that.value >= that.options.min && that.value <= that.options.max) {
         that.value = Math.round(((~~ (((that.value < 0) ? -0.5 : 0.5) + (that.value/that.options.step))) * that.options.step) * 100) / 100;
         update(that.value);
-        console.log("update");
         that.valueArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
         d3.select(that.element).select('.valueArc').attr('d', that.valueArc);
         if (isFinal) {
@@ -312,7 +310,6 @@
    */
   Knob.prototype.setValue = function(newValue) {
     if ((!this.inDrag) && this.value >= this.options.min && this.value <= this.options.max) {
-      console.log("setValue");
       var radians = this.valueToRadians(newValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
       this.value = Math.round(((~~ (((newValue < 0) ? -0.5 : 0.5) + (newValue/this.options.step))) * this.options.step) * 100) / 100;
       this.changeArc.endAngle(radians);
