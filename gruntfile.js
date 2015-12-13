@@ -90,7 +90,7 @@ module.exports = function (grunt) {
         options: {
           open: true,
           port: 9000,
-          debug: true,
+          debug: false,
           keepalive: true,
           base: './'
         }
@@ -106,6 +106,7 @@ module.exports = function (grunt) {
   /**************************************************
   *  Register task
   ***************************************************/
-  grunt.registerTask('default', ['jshint', 'uglify', 'autoprefixer', 'csslint', 'connect']);
-
+  grunt.registerTask('build', ['jshint', 'uglify', 'autoprefixer', 'csslint']);
+  grunt.registerTask('server', ['connect']);
+  grunt.registerTask('default', ['build', 'server']);
 };
