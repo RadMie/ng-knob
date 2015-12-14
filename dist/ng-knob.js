@@ -45,7 +45,7 @@
         }
         return elem;
     };
-    Knob.prototype.createArcs = function(skin) {
+    Knob.prototype.createArcs = function() {
         var outerRadius = parseInt(this.options.size / 2, 10), startAngle = this.valueToRadians(this.options.startAngle, 360), endAngle = this.valueToRadians(this.options.endAngle, 360);
         if (this.options.scale.enabled) {
             if (this.options.scale.type === "dots") {
@@ -70,19 +70,19 @@
         if (this.options.bgColor) {
             this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
         }
-        if (skin === "tron") {
-            trackOuterRadius = trackOuterRadius * .95 - trackOuterRadius * .05;
-            changeOuterRadius = changeOuterRadius * .95 - changeOuterRadius * .05;
-            valueOuterRadius = valueOuterRadius * .95 - valueOuterRadius * .05;
-            interactOuterRadius = interactOuterRadius * .95 - interactOuterRadius * .05;
-            this.hoopArc = this.createArc(outerRadius * .95, outerRadius, startAngle, endAngle);
+        if (this.options.skin.type === "tron") {
+            trackOuterRadius = trackOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
+            changeOuterRadius = changeOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
+            valueOuterRadius = valueOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
+            interactOuterRadius = interactOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
+            this.hoopArc = this.createArc(outerRadius - this.options.skin.width, outerRadius, startAngle, endAngle);
         }
         this.trackArc = this.createArc(trackInnerRadius, trackOuterRadius, startAngle, endAngle);
         this.changeArc = this.createArc(changeInnerRadius, changeOuterRadius, startAngle, startAngle, this.options.barCap);
         this.valueArc = this.createArc(valueInnerRadius, valueOuterRadius, startAngle, startAngle, this.options.barCap);
         this.interactArc = this.createArc(interactInnerRadius, interactOuterRadius, startAngle, endAngle);
     };
-    Knob.prototype.drawArcs = function(skin, clickInteraction, dragBehavior) {
+    Knob.prototype.drawArcs = function(clickInteraction, dragBehavior) {
         var svg = d3.select(this.element).append("svg").attr("width", this.options.size).attr("height", this.options.size);
         if (this.options.bgColor) {
             this.drawArc(svg, this.bgArc, "bgArc", {
@@ -163,9 +163,9 @@
                 });
             }
         }
-        if (skin === "tron") {
+        if (this.options.skin.type === "tron") {
             this.drawArc(svg, this.hoopArc, "hoopArc", {
-                fill: this.options.barColor
+                fill: this.options.skin.color
             });
         }
         this.drawArc(svg, this.trackArc, "trackArc", {
@@ -190,9 +190,9 @@
     };
     Knob.prototype.draw = function(update) {
         var that = this;
-        that.createArcs(that.options.skin);
+        that.createArcs();
         var dragBehavior = d3.behavior.drag().on("drag", dragInteraction).on("dragend", clickInteraction);
-        that.drawArcs(that.options.skin, clickInteraction, dragBehavior);
+        that.drawArcs(clickInteraction, dragBehavior);
         if (that.options.animate.enabled) {
             that.valueElem.transition().ease(that.options.animate.ease).duration(that.options.animate.duration).tween("", function() {
                 var i = d3.interpolate(that.valueToRadians(that.options.startAngle, 360), that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
@@ -269,7 +269,12 @@
             link: function(scope, element) {
                 scope.value = scope.value || 0;
                 var defaultOptions = {
-                    skin: "simple",
+                    skin: {
+                        type: "simple",
+                        width: 10,
+                        color: "rgba(255,0,0,.5)",
+                        spaceWidth: 5
+                    },
                     animate: {
                         enabled: true,
                         duration: 1e3,

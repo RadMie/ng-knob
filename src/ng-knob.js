@@ -67,7 +67,7 @@
   /**
    *   Create the arcs
    */
-  Knob.prototype.createArcs = function(skin) {
+  Knob.prototype.createArcs = function() {
     var outerRadius = parseInt((this.options.size / 2), 10),
     startAngle = this.valueToRadians(this.options.startAngle, 360),
     endAngle = this.valueToRadians(this.options.endAngle, 360);
@@ -105,12 +105,12 @@
     if(this.options.bgColor) {
       this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
     }
-    if(skin === 'tron') {
-      trackOuterRadius = (trackOuterRadius * 0.95) - (trackOuterRadius * 0.05);
-      changeOuterRadius = (changeOuterRadius * 0.95) - (changeOuterRadius * 0.05);
-      valueOuterRadius = (valueOuterRadius * 0.95) - (valueOuterRadius * 0.05);
-      interactOuterRadius = (interactOuterRadius * 0.95) - (interactOuterRadius * 0.05);
-      this.hoopArc = this.createArc(outerRadius * 0.95, outerRadius, startAngle, endAngle);
+    if(this.options.skin.type === 'tron') {
+      trackOuterRadius = trackOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
+      changeOuterRadius = changeOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
+      valueOuterRadius = valueOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
+      interactOuterRadius = interactOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
+      this.hoopArc = this.createArc(outerRadius - this.options.skin.width, outerRadius, startAngle, endAngle);
     }
 
     this.trackArc = this.createArc(trackInnerRadius, trackOuterRadius, startAngle, endAngle);
@@ -121,7 +121,7 @@
   /**
    *   Draw the arcs
    */
-  Knob.prototype.drawArcs = function(skin, clickInteraction, dragBehavior) {
+  Knob.prototype.drawArcs = function(clickInteraction, dragBehavior) {
     var svg = d3.select(this.element)
     .append('svg')
     .attr("width", this.options.size)
@@ -224,8 +224,8 @@
         });
       }
     }
-    if(skin === 'tron') {
-      this.drawArc(svg, this.hoopArc, 'hoopArc', { "fill": this.options.barColor });
+    if(this.options.skin.type === 'tron') {
+      this.drawArc(svg, this.hoopArc, 'hoopArc', { "fill": this.options.skin.color });
     }
     this.drawArc(svg, this.trackArc, 'trackArc', { "fill": this.options.trackColor });
     if(this.options.displayPrevious) {
@@ -242,13 +242,13 @@
   Knob.prototype.draw = function(update) {
     var that = this;
 
-    that.createArcs(that.options.skin);
+    that.createArcs();
 
     var dragBehavior = d3.behavior.drag()
     .on('drag', dragInteraction)
     .on('dragend', clickInteraction);
 
-    that.drawArcs(that.options.skin, clickInteraction, dragBehavior);
+    that.drawArcs(clickInteraction, dragBehavior);
 
     if(that.options.animate.enabled) {
       that.valueElem.transition().ease(that.options.animate.ease).duration(that.options.animate.duration).tween('',function() {
@@ -336,7 +336,12 @@
       link: function (scope, element) {
         scope.value = scope.value || 0;
         var defaultOptions = {
-          skin: 'simple',
+          skin: {
+            type: 'simple',
+            width: 10,
+            color: 'rgba(255,0,0,.5)',
+            spaceWidth: 5
+          },
           animate: {
             enabled: true,
             duration: 1000,
