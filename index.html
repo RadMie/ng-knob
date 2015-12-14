@@ -312,6 +312,16 @@ app.controller('knobCtrl', function ($scope) {
       </div>
     </footer>
 
+    <script>
+       !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
+       (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
+       r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
+       }(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+       ga('create', 'UA-XXXXX-X');
+       ga('send', 'pageview');
+    </script>
+
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script>
@@ -331,9 +341,9 @@ app.controller('knobCtrl', function ($scope) {
         });
       });
     </script>
-    <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/d3/d3.js"></script>
-    <script src="../src/ng-knob.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="dist/ng-knob.js"></script>
     <script src="demo/demo.js"></script>
   </body>
 </html>

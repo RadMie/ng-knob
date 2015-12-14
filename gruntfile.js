@@ -90,9 +90,47 @@ module.exports = function (grunt) {
         options: {
           open: true,
           port: 9000,
+          livereload: 35729,
           debug: false,
-          keepalive: true,
+          //keepalive: true,
           base: './'
+        }
+      }
+    },
+    /**************************************************
+    *  Watch
+    *  https://github.com/gruntjs/grunt-contrib-watch
+    ***************************************************/
+    watch: {
+      css: {
+        files: ['demo/demo.css'],
+        tasks: ['autoprefixer', 'csslint'],
+        options: {
+          livereload: '<%= connect.server.options.livereload %>'
+        }
+      },
+      gruntfile: {
+        files: ['gruntfile.js'],
+        tasks: ['jshint:gruntfile']
+      },
+      source: {
+        files: ['src/ng-knob.js'],
+        tasks: ['jshint:source', 'uglify'],
+        options: {
+          livereload: '<%= connect.server.options.livereload %>'
+        }
+      },
+      demo: {
+        files: ['demo/demo.js'],
+        tasks: ['jshint:demo'],
+        options: {
+          livereload: '<%= connect.server.options.livereload %>'
+        }
+      },
+      html: {
+        files: ['index.html'],
+        options: {
+          livereload: '<%= connect.server.options.livereload %>'
         }
       }
     }
@@ -108,5 +146,5 @@ module.exports = function (grunt) {
   ***************************************************/
   grunt.registerTask('build', ['jshint', 'uglify', 'autoprefixer', 'csslint']);
   grunt.registerTask('server', ['connect']);
-  grunt.registerTask('default', ['build', 'server']);
+  grunt.registerTask('default', ['build', 'server', 'watch']);
 };
