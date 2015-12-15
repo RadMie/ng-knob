@@ -73,16 +73,14 @@
     endAngle = this.valueToRadians(this.options.endAngle, 360);
 
     if(this.options.scale.enabled) {
-      if(this.options.scale.type === 'dots') {
-        outerRadius -= (this.options.scale.width * 2) + this.options.scale.width;
-      } else if (this.options.scale.type === 'lines') {
-        outerRadius -= this.options.scale.height + (Math.log(this.options.scale.height)*4);
-      }
+      outerRadius -= this.options.scale.width + this.options.scale.spaceWidth;
+
     }
     var trackInnerRadius = outerRadius - this.options.trackWidth,
     changeInnerRadius = outerRadius - this.options.barWidth,
     valueInnerRadius = outerRadius - this.options.barWidth,
-    interactInnerRadius = outerRadius - this.options.barWidth,
+    //interactInnerRadius = outerRadius - this.options.barWidth,
+    interactInnerRadius = 1,
 
     trackOuterRadius = outerRadius,
     changeOuterRadius = outerRadius,
@@ -100,7 +98,7 @@
       valueOuterRadius -= diff;
       changeInnerRadius -= diff;
       valueInnerRadius -= diff;
-      interactInnerRadius = outerRadius - this.options.trackWidth;
+      //interactInnerRadius = outerRadius - this.options.trackWidth;
     }
     if(this.options.bgColor) {
       this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
@@ -132,7 +130,7 @@
     }
 
     if(this.options.displayInput) {
-      var fontSize = (this.options.size*0.15) + "px";
+      var fontSize = (this.options.size*0.20) + "px";
       if(this.options.fontSize !== 'auto') {
         fontSize = this.options.fontSize + "px";
       }
@@ -234,7 +232,11 @@
       this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill-opacity": 0 });
     }
     this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', { "fill": this.options.barColor });
-    this.drawArc(svg, this.interactArc, 'interactArc', { "fill-opacity": 0, "cursor": "pointer" }, clickInteraction, dragBehavior);
+    var cursor = "pointer";
+    if(this.options.readOnly) {
+      cursor = "default";
+    }
+    this.drawArc(svg, this.interactArc, 'interactArc', { "fill-opacity": 0, "cursor": cursor }, clickInteraction, dragBehavior);
   };
   /**
    *   Draw knob component
@@ -355,9 +357,9 @@
           readOnly: false,
           trackWidth: 50,
           barWidth: 50,
-          trackColor: "rgba(255,0,0,.1)",
+          trackColor: "rgba(0,0,0,0)",
           barColor: "rgba(255,0,0,.5)",
-          prevBarColor: "rgba(0,0,0,.2)",
+          prevBarColor: "rgba(0,0,0,0)",
           textColor: '#222',
           barCap: 0,
           fontSize: 'auto',
@@ -374,10 +376,11 @@
             color: 'gray',
             width: 4,
             quantity: 20,
-            height: 10
+            height: 10,
+            spaceWidth: 15
           },
           step: 1,
-          displayPrevious: true,
+          displayPrevious: false,
           min: 0,
           max: 100
 				};

@@ -48,13 +48,9 @@
     Knob.prototype.createArcs = function() {
         var outerRadius = parseInt(this.options.size / 2, 10), startAngle = this.valueToRadians(this.options.startAngle, 360), endAngle = this.valueToRadians(this.options.endAngle, 360);
         if (this.options.scale.enabled) {
-            if (this.options.scale.type === "dots") {
-                outerRadius -= this.options.scale.width * 2 + this.options.scale.width;
-            } else if (this.options.scale.type === "lines") {
-                outerRadius -= this.options.scale.height + Math.log(this.options.scale.height) * 4;
-            }
+            outerRadius -= this.options.scale.width + this.options.scale.spaceWidth;
         }
-        var trackInnerRadius = outerRadius - this.options.trackWidth, changeInnerRadius = outerRadius - this.options.barWidth, valueInnerRadius = outerRadius - this.options.barWidth, interactInnerRadius = outerRadius - this.options.barWidth, trackOuterRadius = outerRadius, changeOuterRadius = outerRadius, valueOuterRadius = outerRadius, interactOuterRadius = outerRadius, diff;
+        var trackInnerRadius = outerRadius - this.options.trackWidth, changeInnerRadius = outerRadius - this.options.barWidth, valueInnerRadius = outerRadius - this.options.barWidth, interactInnerRadius = 1, trackOuterRadius = outerRadius, changeOuterRadius = outerRadius, valueOuterRadius = outerRadius, interactOuterRadius = outerRadius, diff;
         if (this.options.barWidth > this.options.trackWidth) {
             diff = (this.options.barWidth - this.options.trackWidth) / 2;
             trackInnerRadius -= diff;
@@ -65,7 +61,6 @@
             valueOuterRadius -= diff;
             changeInnerRadius -= diff;
             valueInnerRadius -= diff;
-            interactInnerRadius = outerRadius - this.options.trackWidth;
         }
         if (this.options.bgColor) {
             this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
@@ -90,7 +85,7 @@
             });
         }
         if (this.options.displayInput) {
-            var fontSize = this.options.size * .15 + "px";
+            var fontSize = this.options.size * .2 + "px";
             if (this.options.fontSize !== "auto") {
                 fontSize = this.options.fontSize + "px";
             }
@@ -183,9 +178,13 @@
         this.valueElem = this.drawArc(svg, this.valueArc, "valueArc", {
             fill: this.options.barColor
         });
+        var cursor = "pointer";
+        if (this.options.readOnly) {
+            cursor = "default";
+        }
         this.drawArc(svg, this.interactArc, "interactArc", {
             "fill-opacity": 0,
-            cursor: "pointer"
+            cursor: cursor
         }, clickInteraction, dragBehavior);
     };
     Knob.prototype.draw = function(update) {
@@ -288,9 +287,9 @@
                     readOnly: false,
                     trackWidth: 50,
                     barWidth: 50,
-                    trackColor: "rgba(255,0,0,.1)",
+                    trackColor: "rgba(0,0,0,0)",
                     barColor: "rgba(255,0,0,.5)",
-                    prevBarColor: "rgba(0,0,0,.2)",
+                    prevBarColor: "rgba(0,0,0,0)",
                     textColor: "#222",
                     barCap: 0,
                     fontSize: "auto",
@@ -307,10 +306,11 @@
                         color: "gray",
                         width: 4,
                         quantity: 20,
-                        height: 10
+                        height: 10,
+                        spaceWidth: 15
                     },
                     step: 1,
-                    displayPrevious: true,
+                    displayPrevious: false,
                     min: 0,
                     max: 100
                 };
