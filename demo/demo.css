@@ -26,3 +26,18 @@ footer {
 footer p {
   margin: 0;
 }
+.row1 {
+ -webkit-column-width: 24em;
+    -moz-column-width: 24em;
+         column-width: 24em;
+ -webkit-column-gap: 1em;
+    -moz-column-gap: 1em;
+         column-gap: 1em;
+  margin-left: 0;
+  margin-right: 0;
+}
+.item {
+ display: inline-block;
+ padding:  .25rem;
+ width:  100%;
+}

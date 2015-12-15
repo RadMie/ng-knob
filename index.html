@@ -52,23 +52,264 @@
       <div class="container">
         <h1>Examples</h1>
         <h5>with different options</h5>
-        <div class="panel panel-primary" ng-controller="knobCtrl1">
-          <div class="panel-heading">
-            <h3 class="panel-title">Default Knob <span class="badge pull-right label-warning">{{value}}</span></h3>
-          </div>
-          <div class="panel-body">
-            <div class="col-lg-8 text-left" >
-              ffe
+        <div class="row row1">
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl1">
+              <div class="panel-heading">
+                <h3 class="panel-title">Skin Tron + scale <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 65;
+$scope.options = {
+  skin: {
+    type: 'tron'
+  },
+  size: 300,
+  unit: "%",
+  barWidth: 40,
+  trackColor: 'rgba(255,0,0,.1)',
+  prevBarColor: 'rgba(0,0,0,.2)',
+  subText: {
+    enabled: true,
+    text: 'CPU used'
+  },
+  scale: {
+    enabled: true,
+    type: 'lines',
+    width: 3
+  },
+  step: 5,
+  displayPrevious: true
+};</pre>
+              </div>
             </div>
-            <div class="col-lg-4 text-right">
-              <ui-knob value="value" options="options"></ui-knob>
+          </div>
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl3">
+              <div class="panel-heading">
+                <h3 class="panel-title">With subtext, unit and read only <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 65;
+$scope.options = {
+  unit: "%",
+  readOnly: true,
+  subText: {
+    enabled: true,
+    text: 'CPU used',
+    color: 'gray',
+    font: 'auto'
+  },
+  trackWidth: 40,
+  barWidth: 25,
+  trackColor: '#656D7F',
+  barColor: '#2CC185'
+};</pre>
+              </div>
             </div>
           </div>
-          <div class="panel-footer">
-            Panel footer
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl4">
+              <div class="panel-heading">
+                <h3 class="panel-title">Bar cap and display previous value<span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 70;
+$scope.options = {
+  displayPrevious: true,
+  barCap: 25,
+  trackWidth: 30,
+  barWidth: 20,
+  trackColor: 'rgba(255,0,0,.1)',
+  prevBarColor: 'rgba(0,0,0,.2)',
+  textColor: 'rgba(255,0,0,.6)'
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl2">
+              <div class="panel-heading">
+                <h3 class="panel-title">Skin Tron <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 84;
+$scope.options = {
+  skin: {
+    type: 'tron',
+    width: 5,
+    color: '#494B52',
+    spaceWidth: 3
+  },
+  barColor: '#494B52',
+  trackWidth: 30,
+  barWidth: 30,
+  textColor: '#494B52'
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl5">
+              <div class="panel-heading">
+                <h3 class="panel-title">Lines scale and step <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 85;
+$scope.options = {
+  scale: {
+    enabled: true,
+    type: 'lines',
+    color: 'gray',
+    width: 1,
+    quantity: 20,
+    height: 8
+  },
+  trackWidth: 30,
+  barWidth: 30,
+  step: 5,
+  trackColor: 'rgba(52,152,219,.1)',
+  barColor: 'rgba(52,152,219,.5)'
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl6">
+              <div class="panel-heading">
+                <h3 class="panel-title">Min, max value <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 350;
+$scope.options = {
+  min: -1000,
+  max: 1000,
+  barColor: '#5BC01E',
+  trackColor: '#212121',
+  trackWidth: 15,
+  barWidth: 30
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl10">
+              <div class="panel-heading">
+                <h3 class="panel-title">Default Knob <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 65;
+$scope.options = {
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl7">
+              <div class="panel-heading">
+                <h3 class="panel-title">Dots scale <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 65;
+$scope.options = {
+  scale: {
+    enabled: true,
+    type: 'dots',
+    color: 'rgba(255,0,0,.2)',
+    width: 2,
+    quantity: 50,
+    spaceWidth: 10
+  },
+  trackWidth: 25,
+  barWidth: 40,
+  trackColor: 'rgba(0,0,0,.1)'
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl8">
+              <div class="panel-heading">
+                <h3 class="panel-title">Animate and disabled input <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 65;
+$scope.options = {
+  displayInput: false,
+  animate: {
+    enabled: true,
+    duration: 2000,
+    ease: 'linear'
+  },
+  trackColor: 'rgba(33,33,33,.2)',
+  barColor: 'rgba(255,221,51,1)'
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl9">
+              <div class="panel-heading">
+                <h3 class="panel-title">Background color <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 65;
+$scope.options = {
+  bgColor: '#2C3E50',
+  trackWidth: 50,
+  barWidth: 30,
+  barColor: '#FFAE1A',
+  textColor: '#eee'
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl11">
+              <div class="panel-heading">
+                <h3 class="panel-title">sss <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 65;
+$scope.options = {
+};</pre>
+              </div>
+            </div>
           </div>
         </div>
-
       </div>
     </section>
 
@@ -151,9 +392,9 @@ app.controller('knobCtrl', function ($scope) {
               <tbody>
                 <tr>
                   <td>skin</td>
-                  <td>string</td>
-                  <td>'simple'</td>
-                  <td>Skin: <code>simple</code> or <code>tron</code></td>
+                  <td>object</td>
+                  <td>{ type: 'simple', width: 10, color: 'rgba(255,0,0,.5)', spaceWidth: 5 }</td>
+                  <td>Type: <code>simple</code> or <code>tron</code></td>
                 </tr>
                 <tr>
                   <td>animate</td>
@@ -212,7 +453,7 @@ app.controller('knobCtrl', function ($scope) {
                 <tr>
                   <td>trackColor</td>
                   <td>string</td>
-                  <td>'rgba(255,0,0,.1)'</td>
+                  <td>'rgba(0,0,0,0)'</td>
                   <td>Color track bar</td>
                 </tr>
                 <tr>
@@ -224,7 +465,7 @@ app.controller('knobCtrl', function ($scope) {
                 <tr>
                   <td>prevBarColor</td>
                   <td>string</td>
-                  <td>'rgba(0,0,0,.2)'</td>
+                  <td>'rgba(0,0,0,0)'</td>
                   <td>Color bar previous value</td>
                 </tr>
                 <tr>
@@ -260,7 +501,7 @@ app.controller('knobCtrl', function ($scope) {
                 <tr>
                   <td>scale</td>
                   <td>object</td>
-                  <td>{ enabled: false, type: 'lines', color: 'gray', width: 4, quantity: 20, height: 10 }</td>
+                  <td>{ enabled: false, type: 'lines', color: 'gray', width: 4, quantity: 20, height: 10, spaceWidth: 15 }</td>
                   <td>Scale options, type: <code>lines</code> or <code>dots</code></td>
                 </tr>
                 <tr>
@@ -272,7 +513,7 @@ app.controller('knobCtrl', function ($scope) {
                 <tr>
                   <td>displayPrevious</td>
                   <td>boolean</td>
-                  <td>true</td>
+                  <td>false</td>
                   <td>Display previous value (<code>true</code> or <code>false</code>)</td>
                 </tr>
                 <tr>
