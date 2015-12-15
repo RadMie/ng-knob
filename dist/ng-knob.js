@@ -20,7 +20,7 @@
         valueStart = valueStart || 0;
         angleEnd = angleEnd || 360;
         angleStart = angleStart || 0;
-        return Math.PI / 180 * ((value - valueStart) * (angleEnd - angleStart) / (valueEnd - valueStart)) + angleStart;
+        return Math.PI / 180 * ((value - valueStart) * (angleEnd - angleStart) / (valueEnd - valueStart) + angleStart);
     };
     Knob.prototype.radiansToValue = function(radians, valueEnd, valueStart, angleEnd, angleStart) {
         valueEnd = valueEnd || 100;
@@ -227,7 +227,7 @@
             } else {
                 delta = 270;
             }
-            radians = (delta - that.options.startAngle + arc) * (Math.PI / 180);
+            radians = (delta + arc) * (Math.PI / 180);
             that.value = that.radiansToValue(radians, that.options.max, that.options.min, that.options.endAngle, that.options.startAngle);
             if (that.value >= that.options.min && that.value <= that.options.max) {
                 that.value = Math.round(~~((that.value < 0 ? -.5 : .5) + that.value / that.options.step) * that.options.step * 100) / 100;

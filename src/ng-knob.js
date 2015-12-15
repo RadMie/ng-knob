@@ -20,7 +20,7 @@
     valueStart = valueStart || 0;
     angleEnd = angleEnd || 360;
     angleStart = angleStart || 0;
-    return (Math.PI/180) * ((((value) - valueStart) * (angleEnd - angleStart)) / (valueEnd - valueStart)) + angleStart;
+    return (Math.PI/180) * ((((value - valueStart) * (angleEnd - angleStart)) / (valueEnd - valueStart)) + angleStart);
   };
   /**
    *   Convert from radians to value
@@ -71,10 +71,8 @@
     var outerRadius = parseInt((this.options.size / 2), 10),
     startAngle = this.valueToRadians(this.options.startAngle, 360),
     endAngle = this.valueToRadians(this.options.endAngle, 360);
-
     if(this.options.scale.enabled) {
       outerRadius -= this.options.scale.width + this.options.scale.spaceWidth;
-
     }
     var trackInnerRadius = outerRadius - this.options.trackWidth,
     changeInnerRadius = outerRadius - this.options.barWidth,
@@ -290,7 +288,7 @@
       } else {
         delta = 270;
       }
-      radians = ((delta-that.options.startAngle) + arc) * (Math.PI/180);
+      radians = (delta + arc) * (Math.PI/180);
       that.value = that.radiansToValue(radians, that.options.max, that.options.min, that.options.endAngle, that.options.startAngle);
       if(that.value >= that.options.min && that.value <= that.options.max) {
         that.value = Math.round(((~~ (((that.value < 0) ? -0.5 : 0.5) + (that.value/that.options.step))) * that.options.step) * 100) / 100;
