@@ -137,6 +137,21 @@ $scope.options = {
             </div>
           </div>
           <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl10">
+              <div class="panel-heading">
+                <h3 class="panel-title">Default Knob <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 65;
+$scope.options = {
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="item">
             <div class="panel panel-primary" ng-controller="knobCtrl2">
               <div class="panel-heading">
                 <h3 class="panel-title">Skin Tron <span class="badge pull-right label-warning">{{value}}</span></h3>
@@ -211,16 +226,28 @@ $scope.options = {
             </div>
           </div>
           <div class="item">
-            <div class="panel panel-primary" ng-controller="knobCtrl10">
+            <div class="panel panel-primary" ng-controller="knobCtrl12">
               <div class="panel-heading">
-                <h3 class="panel-title">Default Knob <span class="badge pull-right label-warning">{{value}}</span></h3>
+                <h3 class="panel-title">Angles <span class="badge pull-right label-warning">{{value}}</span></h3>
               </div>
               <div class="panel-body text-center">
                   <ui-knob value="value" options="options"></ui-knob>
               </div>
               <div class="panel-footer">
-<pre>$scope.value = 65;
+<pre>$scope.value = 256;
 $scope.options = {
+  startAngle: 30,
+  endAngle: 330,
+  unit: 'MB',
+  trackColor: "rgba(162,121,143,1)",
+  barColor: 'rgba(102,0,204,.5)',
+  trackWidth: 15,
+  barWidth: 15,
+  subText: {
+    enabled: true,
+    text: 'RAM used'
+  },
+  max: 1024
 };</pre>
               </div>
             </div>
@@ -297,7 +324,7 @@ $scope.options = {
           <div class="item">
             <div class="panel panel-primary" ng-controller="knobCtrl11">
               <div class="panel-heading">
-                <h3 class="panel-title">sss <span class="badge pull-right label-warning">{{value}}</span></h3>
+                <h3 class="panel-title">Angles + Tron + Scale <span class="badge pull-right label-warning">{{value}}</span></h3>
               </div>
               <div class="panel-body text-center">
                   <ui-knob value="value" options="options"></ui-knob>
@@ -305,6 +332,20 @@ $scope.options = {
               <div class="panel-footer">
 <pre>$scope.value = 65;
 $scope.options = {
+  startAngle: 90,
+  endAngle: 180,
+  displayPrevious: true,
+  prevBarColor: 'rgba(255,0,0,.2)',
+  trackColor: 'rgba(255,0,0,.2)',
+  skin: {
+    type: 'tron'
+  },
+  scale: {
+    enabled: true,
+    type: 'lines',
+    width: 2,
+    quantity: 5
+  }
 };</pre>
               </div>
             </div>

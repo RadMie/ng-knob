@@ -142,4 +142,37 @@ angular.module('KnobDemoApp', ['ui.knob'])
   })
   .controller('knobCtrl11', function ($scope) {
     $scope.value = 65;
+    $scope.options = {
+      startAngle: 90,
+      endAngle: 180,
+      displayPrevious: true,
+      prevBarColor: 'rgba(255,0,0,.2)',
+      trackColor: 'rgba(255,0,0,.2)',
+      skin: {
+        type: 'tron'
+      },
+      scale: {
+        enabled: true,
+        type: 'lines',
+        width: 2,
+        quantity: 5
+      }
+    };
+  })
+  .controller('knobCtrl12', function ($scope) {
+    $scope.value = 256;
+    $scope.options = {
+      startAngle: 30,
+      endAngle: 330,
+      unit: 'MB',
+      trackColor: "rgba(162,121,143,1)",
+      barColor: 'rgba(102,0,204,.5)',
+      trackWidth: 15,
+      barWidth: 15,
+      subText: {
+        enabled: true,
+        text: 'RAM used'
+      },
+      max: 1024
+    };
   });
