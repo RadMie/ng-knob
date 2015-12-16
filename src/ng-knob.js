@@ -155,15 +155,21 @@
       }
     }
     if(this.options.scale.enabled) {
-      var radius, quantity, count = 0, angle = 0, data;
+      var radius, quantity, count = 0, angle = 0, data,
+      startRadians = this.valueToRadians(this.options.min, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min),
+      endRadians = this.valueToRadians(this.options.max, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min),
+      diff = 0;
+      if(this.options.startAngle !== 0 || this.options.endAngle !== 360) {
+        diff = 1;
+      }
       if(this.options.scale.type === 'dots') {
         var width = this.options.scale.width;
         radius = (this.options.size / 2) - width;
         quantity = this.options.scale.quantity;
         var offset = radius + this.options.scale.width;
         data = d3.range(quantity).map(function () {
-          angle = (count * Math.PI * 2) - (Math.PI / 2);
-          count = count + (1 / quantity);
+          angle = (count * (endRadians - startRadians)) - (Math.PI / 2) + startRadians;
+          count = count + (1 / (quantity-diff));
           return {
             cx: offset + Math.cos(angle) * radius,
             cy: offset + Math.sin(angle) * radius,
@@ -190,8 +196,8 @@
         radius = (this.options.size / 2);
         quantity = this.options.scale.quantity;
         data = d3.range(quantity).map(function () {
-          angle = (count * Math.PI * 2) - (Math.PI / 2);
-          count = count + (1 / quantity);
+          angle = (count * (endRadians - startRadians)) - (Math.PI / 2) + startRadians;
+          count = count + (1 / (quantity-diff));
           return {
             x1: radius + Math.cos(angle) * radius,
             y1: radius + Math.sin(angle) * radius,
