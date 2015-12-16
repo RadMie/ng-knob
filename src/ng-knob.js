@@ -138,7 +138,7 @@
       .attr("font-size", fontSize)
       .style("fill", this.options.textColor)
       .text(this.value + this.options.unit || "")
-      .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.05)) + ')');
+      .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.06)) + ')');
 
       if(this.options.subText.enabled) {
         fontSize = (this.options.size*0.07) + "px";
@@ -151,7 +151,7 @@
         .attr("font-size", fontSize)
         .style("fill", this.options.subText.color)
         .text(this.options.subText.text)
-        .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.14)) + ')');
+        .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.15)) + ')');
       }
     }
     if(this.options.scale.enabled) {

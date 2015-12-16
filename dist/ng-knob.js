@@ -89,13 +89,13 @@
             if (this.options.fontSize !== "auto") {
                 fontSize = this.options.fontSize + "px";
             }
-            svg.append("text").attr("class", "text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.options.textColor).text(this.value + this.options.unit || "").attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .05) + ")");
+            svg.append("text").attr("class", "text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.options.textColor).text(this.value + this.options.unit || "").attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .06) + ")");
             if (this.options.subText.enabled) {
                 fontSize = this.options.size * .07 + "px";
                 if (this.options.subText.font !== "auto") {
                     fontSize = this.options.subText.font + "px";
                 }
-                svg.append("text").attr("class", "sub-text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.options.subText.color).text(this.options.subText.text).attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .14) + ")");
+                svg.append("text").attr("class", "sub-text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.options.subText.color).text(this.options.subText.text).attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .15) + ")");
             }
         }
         if (this.options.scale.enabled) {
