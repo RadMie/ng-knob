@@ -1,5 +1,6 @@
 ng-knob
 =============
+> Angular.js directive to Knob component powered by d3.js (without jQuery)
 
 ![screenshot](https://cloud.githubusercontent.com/assets/8116937/11868119/ef1c194e-a4b5-11e5-9ebe-40b6ebb9e5cf.png)
 
