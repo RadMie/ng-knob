@@ -34,7 +34,7 @@
         return arc;
     };
     Knob.prototype.drawArc = function(svg, arc, label, style, click, drag) {
-        var elem = svg.append("path").attr("class", label).attr("d", arc).style(style).attr("transform", "translate(" + this.options.size / 2 + ", " + this.options.size / 2 + ")");
+        var elem = svg.append("path").attr("id", label).attr("d", arc).style(style).attr("transform", "translate(" + this.options.size / 2 + ", " + this.options.size / 2 + ")");
         if (this.options.readOnly === false) {
             if (click) {
                 elem.on("click", click);
@@ -89,7 +89,7 @@
             if (this.options.fontSize !== "auto") {
                 fontSize = this.options.fontSize + "px";
             }
-            svg.append("text").attr("class", "text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.options.textColor).text(this.value + this.options.unit || "").attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .06) + ")");
+            svg.append("text").attr("id", "text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.options.textColor).text(this.value + this.options.unit || "").attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .06) + ")");
             if (this.options.subText.enabled) {
                 fontSize = this.options.size * .07 + "px";
                 if (this.options.subText.font !== "auto") {
@@ -236,13 +236,13 @@
                 that.value = Math.round(~~((that.value < 0 ? -.5 : .5) + that.value / that.options.step) * that.options.step * 100) / 100;
                 update(that.value);
                 that.valueArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
-                d3.select(that.element).select(".valueArc").attr("d", that.valueArc);
+                that.valueElem.attr("d", that.valueArc);
                 if (isFinal) {
                     that.changeArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
-                    d3.select(that.element).select(".changeArc").attr("d", that.changeArc);
+                    that.changeElem.attr("d", that.changeArc);
                 }
                 if (that.options.displayInput) {
-                    d3.select(that.element).select(".text").text(that.value + that.options.unit || "");
+                    d3.select(that.element).select("#text").text(that.value + that.options.unit || "");
                 }
             }
         }
@@ -252,11 +252,11 @@
             var radians = this.valueToRadians(newValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
             this.value = Math.round(~~((newValue < 0 ? -.5 : .5) + newValue / this.options.step) * this.options.step * 100) / 100;
             this.changeArc.endAngle(radians);
-            d3.select(this.element).select(".changeArc").attr("d", this.changeArc);
+            d3.select(this.element).select("#changeArc").attr("d", this.changeArc);
             this.valueArc.endAngle(radians);
-            d3.select(this.element).select(".valueArc").attr("d", this.valueArc);
+            d3.select(this.element).select("#valueArc").attr("d", this.valueArc);
             if (this.options.displayInput) {
-                d3.select(this.element).select(".text").text(this.value + this.options.unit || "");
+                d3.select(this.element).select("#text").text(this.value + this.options.unit || "");
             }
         }
     };
