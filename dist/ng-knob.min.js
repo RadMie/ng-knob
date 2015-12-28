@@ -1,7 +1,7 @@
 /*******************************************************
  * Name:          ng-knob
  * Description:   Angular.js Knob directive
- * Version:       0.1.0
+ * Version:       0.1.1
  * Homepage:      https://radmie.github.io/ng-knob
  * Licence:       MIT
  *******************************************************/
