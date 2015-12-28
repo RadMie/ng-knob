@@ -27,7 +27,7 @@
         valueStart = valueStart || 0;
         angleEnd = angleEnd || 360;
         angleStart = angleStart || 0;
-        return Math.round((180 / Math.PI * Math.abs(radians) - angleStart) * (valueEnd - valueStart) / (angleEnd - angleStart) + valueStart);
+        return Math.round((180 / Math.PI * radians - angleStart) * (valueEnd - valueStart) / (angleEnd - angleStart) + valueStart);
     };
     Knob.prototype.createArc = function(innerRadius, outerRadius, startAngle, endAngle, cornerRadius) {
         var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startAngle).endAngle(endAngle).cornerRadius(cornerRadius);
@@ -229,6 +229,9 @@
                 delta = 90;
             } else {
                 delta = 270;
+                if (that.options.startAngle < 0) {
+                    delta = -90;
+                }
             }
             radians = (delta + arc) * (Math.PI / 180);
             that.value = that.radiansToValue(radians, that.options.max, that.options.min, that.options.endAngle, that.options.startAngle);
