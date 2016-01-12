@@ -1,5 +1,7 @@
 ng-knob
 =============
+
+[![Join the chat at https://gitter.im/RadMie/ng-knob](https://badges.gitter.im/RadMie/ng-knob.svg)](https://gitter.im/RadMie/ng-knob?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 > Angular.js directive to Knob component powered by d3.js (without jQuery)
 
 ![screenshot](https://cloud.githubusercontent.com/assets/8116937/11868119/ef1c194e-a4b5-11e5-9ebe-40b6ebb9e5cf.png)
