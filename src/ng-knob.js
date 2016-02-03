@@ -30,7 +30,7 @@
     valueStart = valueStart || 0;
     angleEnd = angleEnd || 360;
     angleStart = angleStart || 0;
-    return Math.round((((((180/Math.PI) * radians) - angleStart) * (valueEnd - valueStart)) / (angleEnd - angleStart)) + valueStart);
+    return ((((((180/Math.PI) * radians) - angleStart) * (valueEnd - valueStart)) / (angleEnd - angleStart)) + valueStart);
   };
   /**
    *   Create the arc
@@ -131,6 +131,9 @@
       var fontSize = (this.options.size*0.20) + "px";
       if(this.options.fontSize !== 'auto') {
         fontSize = this.options.fontSize + "px";
+      }
+      if(this.options.step < 1) {
+        this.value = this.value.toFixed(1);
       }
       svg.append('text')
       .attr('id', 'text')
@@ -303,6 +306,9 @@
       that.value = that.radiansToValue(radians, that.options.max, that.options.min, that.options.endAngle, that.options.startAngle);
       if(that.value >= that.options.min && that.value <= that.options.max) {
         that.value = Math.round(((~~ (((that.value < 0) ? -0.5 : 0.5) + (that.value/that.options.step))) * that.options.step) * 100) / 100;
+        if(that.options.step < 1) {
+          that.value = that.value.toFixed(1);
+        }
         update(that.value);
         that.valueArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
         that.valueElem.attr('d', that.valueArc);
@@ -323,6 +329,9 @@
     if ((!this.inDrag) && this.value >= this.options.min && this.value <= this.options.max) {
       var radians = this.valueToRadians(newValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
       this.value = Math.round(((~~ (((newValue < 0) ? -0.5 : 0.5) + (newValue/this.options.step))) * this.options.step) * 100) / 100;
+      if(this.options.step < 1) {
+        this.value = this.value.toFixed(1);
+      }
       this.changeArc.endAngle(radians);
       d3.select(this.element).select('#changeArc').attr('d', this.changeArc);
       this.valueArc.endAngle(radians);
