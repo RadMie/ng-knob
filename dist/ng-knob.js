@@ -328,7 +328,8 @@
                     step: 1,
                     displayPrevious: false,
                     min: 0,
-                    max: 100
+                    max: 100,
+                    dynamicOptions: false
                 };
                 scope.options = angular.merge(defaultOptions, scope.options);
                 var knob = new ui.Knob(element[0], scope.value, scope.options);
@@ -337,17 +338,18 @@
                         knob.setValue(newValue);
                     }
                 });
-                var isFirstWatchOnOptions = true;
-                scope.$watch("options", function() {
-                    if (isFirstWatchOnOptions) {
-                        isFirstWatchOnOptions = false;
-                    } else {
-                        console.log("options changed.");
-                        var newOptions = angular.merge(defaultOptions, scope.options);
-                        knob = new ui.Knob(element[0], scope.value, newOptions);
-                        drawKnob();
-                    }
-                }, true);
+                if (scope.options.dynamicOptions) {
+                    var isFirstWatchOnOptions = true;
+                    scope.$watch("options", function() {
+                        if (isFirstWatchOnOptions) {
+                            isFirstWatchOnOptions = false;
+                        } else {
+                            var newOptions = angular.merge(defaultOptions, scope.options);
+                            knob = new ui.Knob(element[0], scope.value, newOptions);
+                            drawKnob();
+                        }
+                    }, true);
+                }
                 var drawKnob = function() {
                     knob.draw(function(value) {
                         scope.$apply(function() {

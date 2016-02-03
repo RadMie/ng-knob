@@ -113,7 +113,14 @@ angular.module('KnobDemoApp', ['ui.knob'])
       },
       trackWidth: 25,
       barWidth: 40,
-      trackColor: 'rgba(0,0,0,.1)'
+      trackColor: 'rgba(0,0,0,.1)',
+      dynamicOptions: true
+    };
+    $scope.changeOptions = function(){
+      $scope.options = {
+        trackColor: "#988CE0",
+        barColor: "rgba(18,7,101,.5)"
+      };
     };
   })
   .controller('knobCtrl8', function ($scope) {

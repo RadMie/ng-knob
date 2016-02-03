@@ -257,10 +257,11 @@ $scope.options = {
           <div class="item">
             <div class="panel panel-primary" ng-controller="knobCtrl7">
               <div class="panel-heading">
-                <h3 class="panel-title">Dots scale <span class="badge pull-right label-warning">{{value}}</span></h3>
+                <h3 class="panel-title">Dots scale + Dynamic options<span class="badge pull-right label-warning">{{value}}</span></h3>
               </div>
               <div class="panel-body text-center">
                   <ui-knob value="value" options="options"></ui-knob>
+                  <button ng-click="changeOptions()">Change options</button>
               </div>
               <div class="panel-footer">
 <pre>$scope.value = 65;
@@ -275,7 +276,11 @@ $scope.options = {
   },
   trackWidth: 25,
   barWidth: 40,
-  trackColor: 'rgba(0,0,0,.1)'
+  trackColor: 'rgba(0,0,0,.1)',
+  dynamicOptions: true
+};
+$scope.changeOptions = function(){
+// options changed
 };</pre>
               </div>
             </div>
@@ -551,7 +556,7 @@ app.controller('knobCtrl', function ($scope) {
                   <td>step</td>
                   <td>integer</td>
                   <td>1</td>
-                  <td>Step change, only integer</td>
+                  <td>Step change, min <code>0.1</code></td>
                 </tr>
                 <tr>
                   <td>displayPrevious</td>
@@ -570,6 +575,12 @@ app.controller('knobCtrl', function ($scope) {
                   <td>integer</td>
                   <td>100</td>
                   <td>Max value (end value), only integer</td>
+                </tr>
+                <tr>
+                  <td>dynamicOptions</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Dynamic change options (<code>true</code> or <code>false</code>)</td>
                 </tr>
               </tbody>
             </table>
