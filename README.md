@@ -15,7 +15,7 @@ Features
 - configurable minimum, maximum values and step
 - animated
 - shows previous value
-- tiny - 10.6kb minified
+- tiny - 11.5kb minified
 - great ability to configure
 - configurable scale
 - touch, click and drag events implemented
@@ -91,11 +91,11 @@ Options
 | subText          | object       | { enabled: false, text: '', color: 'gray', font: 'auto' }                                             | Subtext options                                                                              |
 | bgColor          | string       | ''                                                                                                    | Background color                                                                             |
 | scale            | object       | { enabled: false, type: 'lines', color: 'gray', width: 4, quantity: 20, height: 10, spaceWidth: 15 }  | Scale options, type: `lines` or `dots`                                                       |
-| step             | integer      | 1                                                                                                     | Step change, only integer                                                                    |
+| step             | integer      | 1                                                                                                     | Step change, min `0.1`                                                                       |
 | displayPrevious  | boolean      | false                                                                                                 | Display previous value (`true` or `false`)                                                   |
 | min              | integer      | 0                                                                                                     | Min value (start value), only integer                                                        |
 | max              | integer      | 100                                                                                                   | Max value (end value), only integer                                                          |
-
+| dynamicOptions   | boolean      | false                                                                                                 | Dynamic change options (`true` or `false`)                                                   |
 
 Contributing
 -------
