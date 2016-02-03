@@ -26,7 +26,7 @@ angular.module('KnobDemoApp', ['ui.knob'])
     };
   })
   .controller('knobCtrl2', function ($scope) {
-    $scope.value = 84;
+    $scope.value = 5.4;
     $scope.options = {
       skin: {
         type: 'tron',
@@ -37,7 +37,9 @@ angular.module('KnobDemoApp', ['ui.knob'])
       barColor: '#494B52',
       trackWidth: 30,
       barWidth: 30,
-      textColor: '#494B52'
+      textColor: '#494B52',
+      step: 0.1,
+      max: 10
     };
   })
   .controller('knobCtrl3', function ($scope) {
