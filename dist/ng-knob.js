@@ -194,6 +194,7 @@
         }, clickInteraction, dragBehavior);
     };
     Knob.prototype.draw = function(update) {
+        d3.select(this.element).select("svg").remove();
         var that = this;
         that.createArcs();
         var dragBehavior = d3.behavior.drag().on("drag", dragInteraction).on("dragend", clickInteraction);
@@ -336,11 +337,25 @@
                         knob.setValue(newValue);
                     }
                 });
-                knob.draw(function(value) {
-                    scope.$apply(function() {
-                        scope.value = value;
+                var isFirstWatchOnOptions = true;
+                scope.$watch("options", function() {
+                    if (isFirstWatchOnOptions) {
+                        isFirstWatchOnOptions = false;
+                    } else {
+                        console.log("options changed.");
+                        var newOptions = angular.merge(defaultOptions, scope.options);
+                        knob = new ui.Knob(element[0], scope.value, newOptions);
+                        drawKnob();
+                    }
+                }, true);
+                var drawKnob = function() {
+                    knob.draw(function(value) {
+                        scope.$apply(function() {
+                            scope.value = value;
+                        });
                     });
-                });
+                };
+                drawKnob();
             }
         };
     };
