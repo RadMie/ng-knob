@@ -92,7 +92,11 @@
             if (this.options.step < 1) {
                 this.value = this.value.toFixed(1);
             }
-            svg.append("text").attr("id", "text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.options.textColor).text(this.value + this.options.unit || "").attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .06) + ")");
+            var v = this.value;
+            if (typeof this.options.inputFormatter === "function") {
+                v = this.options.inputFormatter(v);
+            }
+            svg.append("text").attr("id", "text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.options.textColor).text(v + this.options.unit || "").attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .06) + ")");
             if (this.options.subText.enabled) {
                 fontSize = this.options.size * .07 + "px";
                 if (this.options.subText.font !== "auto") {
@@ -252,7 +256,11 @@
                     that.changeElem.attr("d", that.changeArc);
                 }
                 if (that.options.displayInput) {
-                    d3.select(that.element).select("#text").text(that.value + that.options.unit || "");
+                    var v = that.value;
+                    if (typeof that.options.inputFormatter === "function") {
+                        v = that.options.inputFormatter(v);
+                    }
+                    d3.select(that.element).select("#text").text(v + that.options.unit || "");
                 }
             }
         }
@@ -269,7 +277,11 @@
             this.valueArc.endAngle(radians);
             d3.select(this.element).select("#valueArc").attr("d", this.valueArc);
             if (this.options.displayInput) {
-                d3.select(this.element).select("#text").text(this.value + this.options.unit || "");
+                var v = this.value;
+                if (typeof this.options.inputFormatter === "function") {
+                    v = this.options.inputFormatter(v);
+                }
+                d3.select(this.element).select("#text").text(v + this.options.unit || "");
             }
         }
     };
@@ -300,6 +312,9 @@
                     endAngle: 360,
                     unit: "",
                     displayInput: true,
+                    inputFormatter: function(v) {
+                        return v;
+                    },
                     readOnly: false,
                     trackWidth: 50,
                     barWidth: 50,
