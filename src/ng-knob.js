@@ -99,7 +99,12 @@
       //interactInnerRadius = outerRadius - this.options.trackWidth;
     }
     if(this.options.bgColor) {
-      this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
+		if(this.options.bgFull){
+			this.bgArc = this.createArc(0, outerRadius, 0, Math.PI*2);
+		}
+		else{
+			this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
+		}
     }
     if(this.options.skin.type === 'tron') {
       trackOuterRadius = trackOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
@@ -402,6 +407,7 @@
             font: "auto"
           },
           bgColor: '',
+		  bgFull: false,
           scale: {
             enabled: false,
             type: 'lines',
