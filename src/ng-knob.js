@@ -99,7 +99,12 @@
       //interactInnerRadius = outerRadius - this.options.trackWidth;
     }
     if(this.options.bgColor) {
-      this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
+		if(this.options.bgFull){
+			this.bgArc = this.createArc(0, outerRadius, 0, Math.PI*2);
+		}
+		else{
+			this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
+		}
     }
     if(this.options.skin.type === 'tron') {
       trackOuterRadius = trackOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
@@ -109,7 +114,7 @@
       this.hoopArc = this.createArc(outerRadius - this.options.skin.width, outerRadius, startAngle, endAngle);
     }
 
-    this.trackArc = this.createArc(trackInnerRadius, trackOuterRadius, startAngle, endAngle);
+    this.trackArc = this.createArc(trackInnerRadius, trackOuterRadius, startAngle, endAngle, this.options.trackCap);
     this.changeArc = this.createArc(changeInnerRadius, changeOuterRadius, startAngle, startAngle, this.options.barCap);
     this.valueArc = this.createArc(valueInnerRadius, valueOuterRadius, startAngle, startAngle, this.options.barCap);
     this.interactArc = this.createArc(interactInnerRadius, interactOuterRadius, startAngle, endAngle);
@@ -394,6 +399,7 @@
           prevBarColor: "rgba(0,0,0,0)",
           textColor: '#222',
           barCap: 0,
+		  trackCap: 0,
           fontSize: 'auto',
           subText: {
             enabled: false,
@@ -402,6 +408,7 @@
             font: "auto"
           },
           bgColor: '',
+		  bgFull: false,
           scale: {
             enabled: false,
             type: 'lines',
