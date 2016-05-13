@@ -270,7 +270,7 @@
         }
     };
     Knob.prototype.setValue = function(newValue) {
-        if (!this.inDrag && this.value >= this.options.min && this.value <= this.options.max) {
+        if (!this.inDrag && newValue >= this.options.min && newValue <= this.options.max) {
             var radians = this.valueToRadians(newValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
             this.value = Math.round(~~((newValue < 0 ? -.5 : .5) + newValue / this.options.step) * this.options.step * 100) / 100;
             if (this.options.step < 1) {
@@ -357,6 +357,7 @@
                 scope.$watch("value", function(newValue, oldValue) {
                     if ((newValue !== null || typeof newValue !== "undefined") && typeof oldValue !== "undefined" && newValue !== oldValue) {
                         knob.setValue(newValue);
+                        drawKnob();
                     }
                 });
                 if (scope.options.dynamicOptions) {
