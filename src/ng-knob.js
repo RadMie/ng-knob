@@ -430,7 +430,6 @@
         scope.$watch('value', function(newValue, oldValue) {
           if((newValue !== null || typeof newValue !== 'undefined') && typeof oldValue !== 'undefined' && newValue !== oldValue) {
             knob.setValue(newValue);
-			drawKnob();
           }
         });
 
