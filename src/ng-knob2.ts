@@ -3,18 +3,19 @@
  * https://github.com/thiboot
  * 
  * Install d3 typings
+ * import {Knob} from '../../knob/ng-knob2';
  * <ui-knob [(value)]="myKnobValue" [options]="myKnobOptions"></ui-knob>
  * 
  * Well tested in ionic2
  */
 
-import {Directive, ElementRef, OnInit, OnChanges,  Input, Output, EventEmitter} from '@angular/core';
+import {Directive, ElementRef, OnInit, OnChanges, Input, Output, EventEmitter} from '@angular/core';
 import * as d3 from 'd3';
 
 @Directive({
   selector: 'ui-knob'
 })
-export class KnobCmp implements OnInit {
+export class Knob implements OnInit {
   element: HTMLElement;
   @Input() value: number;
   @Input() options: any;
