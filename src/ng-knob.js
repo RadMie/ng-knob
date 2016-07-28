@@ -62,7 +62,7 @@
         elem.call(drag);
       }
     }
-    if(this.options.stopPropagation === false) {
+    if(this.options.stopPropagation) {
       elem.on("mousedown", function () {
         d3.event.stopPropagation();
       });
