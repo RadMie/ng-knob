@@ -43,6 +43,14 @@
                 elem.call(drag);
             }
         }
+        if (this.options.stopPropagation === false) {
+            elem.on("mousedown", function() {
+                d3.event.stopPropagation();
+            });
+            elem.on("touchstart", function() {
+                d3.event.stopPropagation();
+            });
+        }
         return elem;
     };
     Knob.prototype.createArcs = function() {
