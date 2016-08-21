@@ -258,6 +258,9 @@
                 if (isFinal) {
                     that.changeArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
                     that.changeElem.attr("d", that.changeArc);
+                    if (typeof that.options.onEnd === "function") {
+                        that.options.onEnd(that.value);
+                    }
                 }
                 if (that.options.displayInput) {
                     var v = that.value;
