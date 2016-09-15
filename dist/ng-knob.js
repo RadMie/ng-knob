@@ -43,6 +43,18 @@
                 elem.call(drag);
             }
         }
+        if (this.options.onmouseup) {
+            var onmouseup = this.options.onmouseup;
+            elem.on("mouseup", function() {
+                onmouseup();
+            });
+        }
+        if (this.options.touchend) {
+            var touchend = this.options.touchend;
+            elem.on("touchend", function() {
+                touchend();
+            });
+        }
         if (this.options.stopPropagation) {
             elem.on("mousedown", function() {
                 d3.event.stopPropagation();
