@@ -357,6 +357,73 @@ $scope.options = {
               </div>
             </div>
           </div>
+
+
+
+
+
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl13">
+              <div class="panel-heading">
+                <h3 class="panel-title">Ranges for value based coloring<span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 5;
+$scope.options = {
+  startAngle: -115,
+  endAngle: 115,
+  unit: '°C',
+  trackWidth: 40,
+  barWidth: 35,
+  trackColor: '#656D7F',
+  prevBarColor: 'rgba(0,0,0,.3)',
+  displayPrevious: true,
+  skin: {
+    type: 'tron'
+  },
+  subText: {
+    enabled: true,
+    text: 'Outside'
+  },
+  rangesEnabled: true,
+  ranges: [
+    { min: -10,
+      max: 0,
+      barColor: "rgb(0,204,255)",
+      textColor: "rgb(0,204,255)"},
+    { min: 10,
+      max: 20,
+      barColor: "rgb(255,153,51)",
+      textColor: "rgb(255,153,51)"},
+    { min: 20,
+      max: 40,
+      barColor: "rgb(255,51,0)",
+      textColor: "rgb(255,51,0)"},
+    { min:  0,
+      max: 10,
+      barColor: "rgb(0,204,102)",
+      textColor: "rgb(0,204,102)"},
+    { min: -20,
+      max: -10,
+      barColor: "rgb(0,102,255)",
+      textColor: "rgb(0,102,255)"}
+  ],
+  min: -20,
+  max: 40
+};</pre>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+
+
         </div>
       </div>
     </section>
@@ -581,6 +648,21 @@ app.controller('knobCtrl', function ($scope) {
                   <td>boolean</td>
                   <td>false</td>
                   <td>Dynamic change options (<code>true</code> or <code>false</code>)</td>
+                </tr>
+                <tr>
+                  <td>rangesEnabled</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Enables or disables coloring of value bar and tron arc based on ranges (<code>true</code> or <code>false</code>)</td>
+                </tr>
+                <tr>
+                  <td>ranges</td>
+                  <td>array</td>
+                  <td>[<BR>&nbsp&nbsp{ min: 0, max: 100,<BR>&nbsp&nbsp&nbsp barColor: "rgba(255,0,0,0,0.5",<BR>&nbsp&nbsp&nbsp textColor: '#222'}<BR> ]</td>
+                  <td><p>Each entry in the array defines a range that is used to color the bar based on the current value.</p>
+                      <p>For each range, min/max are used to set the borders of the range, barColor defines the color of the bar and textColor (optional) defines the color of the value text displayed in the center.</p>
+                      If style tron is used, the tron arc does show the ranges in the corresponding color.
+                  </td>
                 </tr>
               </tbody>
             </table>
