@@ -29,6 +29,36 @@
         angleStart = angleStart || 0;
         return (180 / Math.PI * radians - angleStart) * (valueEnd - valueStart) / (angleEnd - angleStart) + valueStart;
     };
+    Knob.prototype.hasRanges = function() {
+        if (typeof this.options.ranges !== "undefined") {
+            if (this.options.ranges.length > 0) {
+                return true;
+            }
+        }
+        return false;
+    };
+    Knob.prototype.getBarColor = function(ranges, value) {
+        var colorValue = this.options.barColor;
+        if (this.hasRanges() && this.options.rangesEnabled) {
+            ranges.forEach(function(arrayItem) {
+                if (value >= arrayItem.min && value < arrayItem.max) {
+                    colorValue = arrayItem.barColor;
+                }
+            });
+        }
+        return colorValue;
+    };
+    Knob.prototype.getTextColor = function(ranges, value) {
+        var colorValue = this.options.textColor;
+        if (this.hasRanges() && this.options.rangesEnabled) {
+            ranges.forEach(function(arrayItem) {
+                if (value >= arrayItem.min && value < arrayItem.max) {
+                    colorValue = arrayItem.textColor;
+                }
+            });
+        }
+        return colorValue;
+    };
     Knob.prototype.createArc = function(innerRadius, outerRadius, startAngle, endAngle, cornerRadius) {
         var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(startAngle).endAngle(endAngle).cornerRadius(cornerRadius);
         return arc;
@@ -74,7 +104,17 @@
             changeOuterRadius = changeOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
             valueOuterRadius = valueOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
             interactOuterRadius = interactOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
-            this.hoopArc = this.createArc(outerRadius - this.options.skin.width, outerRadius, startAngle, endAngle);
+            if (this.options.rangesEnabled) {
+                this.options.ranges.sort(function(a, b) {
+                    return b.max - a.max;
+                });
+                this.hoopRangeArcs = [];
+                for (var index = 0; index < this.options.ranges.length; index++) {
+                    this.hoopRangeArcs.push(this.createArc(outerRadius - this.options.skin.width, outerRadius, startAngle, this.valueToRadians(this.options.ranges[index].max, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min)));
+                }
+            } else {
+                this.hoopArc = this.createArc(outerRadius - this.options.skin.width, outerRadius, startAngle, endAngle);
+            }
         }
         this.trackArc = this.createArc(trackInnerRadius, trackOuterRadius, startAngle, endAngle, this.options.trackCap);
         this.changeArc = this.createArc(changeInnerRadius, changeOuterRadius, startAngle, startAngle, this.options.barCap);
@@ -100,7 +140,7 @@
             if (typeof this.options.inputFormatter === "function") {
                 v = this.options.inputFormatter(v);
             }
-            svg.append("text").attr("id", "text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.options.textColor).text(v + this.options.unit || "").attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .06) + ")");
+            svg.append("text").attr("id", "text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.getTextColor(this.options.ranges, this.value)).text(v + this.options.unit || "").attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .06) + ")");
             if (this.options.subText.enabled) {
                 fontSize = this.options.size * .07 + "px";
                 if (this.options.subText.font !== "auto") {
@@ -173,9 +213,17 @@
             }
         }
         if (this.options.skin.type === "tron") {
-            this.drawArc(svg, this.hoopArc, "hoopArc", {
-                fill: this.options.skin.color
-            });
+            if (this.options.rangesEnabled) {
+                for (var index = 0; index < this.hoopRangeArcs.length; index++) {
+                    this.drawArc(svg, this.hoopRangeArcs[index], "hoopRangeArc", {
+                        fill: this.options.ranges[index].barColor
+                    });
+                }
+            } else {
+                this.drawArc(svg, this.hoopArc, "hoopArc", {
+                    fill: this.options.skin.color
+                });
+            }
         }
         this.drawArc(svg, this.trackArc, "trackArc", {
             fill: this.options.trackColor
@@ -190,7 +238,7 @@
             });
         }
         this.valueElem = this.drawArc(svg, this.valueArc, "valueArc", {
-            fill: this.options.barColor
+            fill: this.getBarColor(this.options.ranges, this.value)
         });
         var cursor = "pointer";
         if (this.options.readOnly) {
@@ -255,6 +303,7 @@
                 update(that.value);
                 that.valueArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
                 that.valueElem.attr("d", that.valueArc);
+                that.valueElem.attr("style", "fill: " + that.getBarColor(that.options.ranges, that.value));
                 if (isFinal) {
                     that.changeArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
                     that.changeElem.attr("d", that.changeArc);
@@ -268,6 +317,7 @@
                         v = that.options.inputFormatter(v);
                     }
                     d3.select(that.element).select("#text").text(v + that.options.unit || "");
+                    d3.select(that.element).select("#text").attr("style", "fill: " + that.getTextColor(that.options.ranges, that.value));
                 }
             }
         }
@@ -283,12 +333,14 @@
             d3.select(this.element).select("#changeArc").attr("d", this.changeArc);
             this.valueArc.endAngle(radians);
             d3.select(this.element).select("#valueArc").attr("d", this.valueArc);
+            d3.select(this.element).select("#valueArc").attr("style", "fill: " + this.getBarColor(this.options.ranges, this.value));
             if (this.options.displayInput) {
                 var v = this.value;
                 if (typeof this.options.inputFormatter === "function") {
                     v = this.options.inputFormatter(v);
                 }
                 d3.select(this.element).select("#text").text(v + this.options.unit || "");
+                d3.select(this.element).select("#text").attr("style", "fill: " + this.getTextColor(this.options.ranges, this.value));
             }
         }
     };
@@ -353,7 +405,14 @@
                     displayPrevious: false,
                     min: 0,
                     max: 100,
-                    dynamicOptions: false
+                    dynamicOptions: false,
+                    rangesEnabled: false,
+                    ranges: [ {
+                        min: 0,
+                        max: 100,
+                        barColor: "rgba(255,0,0,0,0.5",
+                        textColor: "#222"
+                    } ]
                 };
                 scope.options = angular.merge(defaultOptions, scope.options);
                 var knob = new ui.Knob(element[0], scope.value, scope.options);
