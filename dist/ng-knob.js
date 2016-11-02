@@ -1,7 +1,7 @@
 /*******************************************************
  * Name:          ng-knob
  * Description:   Angular.js Knob directive
- * Version:       0.1.4
+ * Version:       0.1.5
  * Homepage:      https://radmie.github.io/ng-knob
  * Licence:       MIT
  *******************************************************/
@@ -307,6 +307,9 @@
                 if (isFinal) {
                     that.changeArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
                     that.changeElem.attr("d", that.changeArc);
+                    if (typeof that.options.onEnd === "function") {
+                        that.options.onEnd(that.value);
+                    }
                 }
                 if (that.options.displayInput) {
                     var v = that.value;

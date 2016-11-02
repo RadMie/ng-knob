@@ -7,6 +7,9 @@ angular.module('KnobDemoApp', ['ui.knob'])
       skin: {
         type: 'tron'
       },
+      onEnd: function (v) {
+        console.log('onEnd value: ' + v);
+      },
       size: 300,
       unit: "%",
       barWidth: 40,

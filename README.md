@@ -99,7 +99,7 @@ Options
 | min              | integer      | 0                                                                                                     | Min value (start value), only integer                                                        |
 | max              | integer      | 100                                                                                                   | Max value (end value), only integer                                                          |
 | dynamicOptions   | boolean      | false                                                                                                 | Dynamic change options (`true` or `false`)                                                   |
-
+| onEnd            | function     | undefined                                                                                             | Function called when finishing a drag operation (i.e. setting the final value)               |
 Contributing
 -------
 
