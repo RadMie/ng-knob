@@ -33,6 +33,46 @@
     return ((((((180/Math.PI) * radians) - angleStart) * (valueEnd - valueStart)) / (angleEnd - angleStart)) + valueStart);
   };
   /**
+   *   returns true if ranges are defined
+   */
+  Knob.prototype.hasRanges = function() {
+    if (typeof this.options.ranges !== 'undefined') {
+      if (this.options.ranges.length > 0) {
+        return(true);
+      }
+    }
+    return(false);
+  };
+
+  /**
+   *   get color for value either return color  as defined in options (BarColor)
+   *   or return color based on ranges defined in options
+   */
+  Knob.prototype.getBarColor = function(ranges, value) {
+    var colorValue = this.options.barColor;  // default to barColor if we dont find the value in the ranges
+    if (this.hasRanges() && this.options.rangesEnabled) {
+        ranges.forEach( function (arrayItem) {
+          if (value >= arrayItem.min && value < arrayItem.max) { colorValue = arrayItem.barColor; }
+        });
+    }
+    return(colorValue);
+  };
+
+    /**
+   *   get color for text either return color as defined in options (TextColor)
+   *   or return color based on ranges defined in options
+   */
+  Knob.prototype.getTextColor = function(ranges, value) {
+    var colorValue = this.options.textColor;  // default to textColor if we dont find the value in the ranges
+    if (this.hasRanges() && this.options.rangesEnabled )  {
+        ranges.forEach( function (arrayItem) {
+          if (value >= arrayItem.min && value < arrayItem.max) { colorValue = arrayItem.textColor; }
+        });
+    }
+    return(colorValue);
+  };
+
+  /**
    *   Create the arc
    */
   Knob.prototype.createArc = function(innerRadius, outerRadius, startAngle, endAngle, cornerRadius) {
@@ -111,7 +151,22 @@
       changeOuterRadius = changeOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
       valueOuterRadius = valueOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
       interactOuterRadius = interactOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
-      this.hoopArc = this.createArc(outerRadius - this.options.skin.width, outerRadius, startAngle, endAngle);
+      if (this.options.rangesEnabled) {
+        // sort options.ranges by max descending in order to draw the hoopRange Arcs in the correct order
+        this.options.ranges.sort(function(a, b){return b.max-a.max;});
+        // loop over ranges and add an arc in the array per range
+        this.hoopRangeArcs = [];
+        for (var index = 0; index < this.options.ranges.length; index++) {
+          this.hoopRangeArcs.push(this.createArc(outerRadius - this.options.skin.width,
+                                                 outerRadius,
+                                                 startAngle,
+                                                 this.valueToRadians(this.options.ranges[index].max, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min)));
+
+        }
+      }
+      else {
+        this.hoopArc = this.createArc(outerRadius - this.options.skin.width, outerRadius, startAngle, endAngle);
+      }
     }
 
     this.trackArc = this.createArc(trackInnerRadius, trackOuterRadius, startAngle, endAngle, this.options.trackCap);
@@ -133,24 +188,26 @@
     }
 
     if(this.options.displayInput) {
-      var fontSize = (this.options.size*0.20) + "px";
-      if(this.options.fontSize !== 'auto') {
+      var fontSize = (this.options.size * 0.20) + "px";
+      if (this.options.fontSize !== 'auto') {
         fontSize = this.options.fontSize + "px";
       }
-      if(this.options.step < 1) {
+      if (this.options.step < 1) {
         this.value = this.value.toFixed(1);
       }
       var v = this.value;
-      if (typeof this.options.inputFormatter === "function"){
-          v = this.options.inputFormatter(v);
+      if (typeof this.options.inputFormatter === "function") {
+        v = this.options.inputFormatter(v);
       }
+
       svg.append('text')
       .attr('id', 'text')
       .attr("text-anchor", "middle")
       .attr("font-size", fontSize)
-      .style("fill", this.options.textColor)
+      .style("fill", this.getTextColor(this.options.ranges, this.value))
       .text(v + this.options.unit || "")
       .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.06)) + ')');
+
 
       if(this.options.subText.enabled) {
         fontSize = (this.options.size*0.07) + "px";
@@ -239,7 +296,15 @@
       }
     }
     if(this.options.skin.type === 'tron') {
-      this.drawArc(svg, this.hoopArc, 'hoopArc', { "fill": this.options.skin.color });
+      if (this.options.rangesEnabled) {
+        // loop over ranges and draw hoopRangeArcs with matching color
+        for (var index = 0; index < this.hoopRangeArcs.length; index++) {
+          this.drawArc(svg, this.hoopRangeArcs[index], 'hoopRangeArc', {"fill": this.options.ranges[index].barColor});
+        }
+      }
+      else {
+        this.drawArc(svg, this.hoopArc, 'hoopArc', {"fill": this.options.skin.color});
+      }
     }
     this.drawArc(svg, this.trackArc, 'trackArc', { "fill": this.options.trackColor });
     if(this.options.displayPrevious) {
@@ -247,13 +312,17 @@
     } else {
       this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill-opacity": 0 });
     }
-    this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', { "fill": this.options.barColor });
+
+    // draw value arc in correct color
+    this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', { "fill": this.getBarColor(this.options.ranges, this.value) });
+
     var cursor = "pointer";
     if(this.options.readOnly) {
       cursor = "default";
     }
     this.drawArc(svg, this.interactArc, 'interactArc', { "fill-opacity": 0, "cursor": cursor }, clickInteraction, dragBehavior);
   };
+
   /**
    *   Draw knob component
    */
@@ -319,12 +388,19 @@
         if(that.options.step < 1) {
           that.value = that.value.toFixed(1);
         }
+
         update(that.value);
         that.valueArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
         that.valueElem.attr('d', that.valueArc);
+        // set change bar color at interaction
+        that.valueElem.attr('style', 'fill: ' + that.getBarColor(that.options.ranges, that.value));
+
         if (isFinal) {
           that.changeArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
           that.changeElem.attr('d', that.changeArc);
+          if (typeof that.options.onEnd === "function") {
+            that.options.onEnd(that.value);
+          }
         }
         if(that.options.displayInput) {
           var v = that.value;
@@ -332,6 +408,8 @@
             v = that.options.inputFormatter(v);
           }
           d3.select(that.element).select('#text').text(v + that.options.unit || "");
+          // set text color at interaction
+          d3.select(that.element).select('#text').attr('style', 'fill: ' + that.getTextColor(that.options.ranges, that.value));
         }
       }
     }
@@ -350,12 +428,17 @@
       d3.select(this.element).select('#changeArc').attr('d', this.changeArc);
       this.valueArc.endAngle(radians);
       d3.select(this.element).select('#valueArc').attr('d', this.valueArc);
+      // set bar color once value changed
+      d3.select(this.element).select('#valueArc').attr('style', 'fill: ' + this.getBarColor(this.options.ranges, this.value));
+
       if(this.options.displayInput) {
         var v = this.value;
         if (typeof this.options.inputFormatter === "function"){
           v = this.options.inputFormatter(v);
         }
         d3.select(this.element).select('#text').text(v + this.options.unit || "");
+        // test text color ove value changed
+        d3.select(this.element).select('#text').attr('style', 'fill: ' + this.getTextColor(this.options.ranges, this.value));
       }
     }
   };
@@ -422,8 +505,10 @@
           displayPrevious: false,
           min: 0,
           max: 100,
-          dynamicOptions: false
-				};
+          dynamicOptions: false,
+          rangesEnabled: false,
+          ranges: [ { min: 0, max: 100, barColor: "rgba(255,0,0,0,0.5", textColor: '#222' } ]
+        };
         scope.options = angular.merge(defaultOptions, scope.options);
         var knob = new ui.Knob(element[0], scope.value, scope.options);
 

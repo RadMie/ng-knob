@@ -7,6 +7,9 @@ angular.module('KnobDemoApp', ['ui.knob'])
       skin: {
         type: 'tron'
       },
+      onEnd: function (v) {
+        console.log('onEnd value: ' + v);
+      },
       size: 300,
       unit: "%",
       barWidth: 40,
@@ -184,4 +187,51 @@ angular.module('KnobDemoApp', ['ui.knob'])
       },
       max: 1024
     };
+  })
+
+  .controller('knobCtrl13', function ($scope) {
+    $scope.value = 5;
+    $scope.options = {
+      startAngle: -115,
+      endAngle: 115,
+      unit: '°C',
+      trackWidth: 40,
+      barWidth: 35,
+      trackColor: '#656D7F',
+      prevBarColor: 'rgba(0,0,0,.3)',
+      displayPrevious: true,
+      skin: {
+        type: 'tron'
+      },
+      subText: {
+        enabled: true,
+        text: 'Outside'
+      },
+      rangesEnabled: true,
+      ranges: [
+        { min: -10,
+          max: 0,
+          barColor: "rgb(0,204,255)",
+          textColor: "rgb(0,204,255)"},
+        { min: 10,
+          max: 20,
+          barColor: "rgb(255,153,51)",
+          textColor: "rgb(255,153,51)"},
+        { min: 20,
+          max: 40,
+          barColor: "rgb(255,51,0)",
+          textColor: "rgb(255,51,0)"},
+        { min:  0,
+          max: 10,
+          barColor: "rgb(0,204,102)",
+          textColor: "rgb(0,204,102)"},
+        { min: -20,
+          max: -10,
+          barColor: "rgb(0,102,255)",
+          textColor: "rgb(0,102,255)"}
+      ],
+      min: -20,
+      max: 40
+    };
   });
+
