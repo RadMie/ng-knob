@@ -100,6 +100,8 @@ Options
 | max              | integer      | 100                                                                                                   | Max value (end value), only integer                                                          |
 | dynamicOptions   | boolean      | false                                                                                                 | Dynamic change options (`true` or `false`)                                                   |
 | onEnd            | function     | undefined                                                                                             | Function called when finishing a drag operation (i.e. setting the final value)               |
+| ranges           | array        | [ { min: 0; max; 100; barColor: "rgba(255,0,0,0,0.5", textColor: "#222" }]                            | Each entry in the array defines a range used to color the bar based on the current value.    |
+
 Contributing
 -------
 
