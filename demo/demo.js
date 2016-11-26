@@ -184,4 +184,11 @@ angular.module('KnobDemoApp', ['ui.knob'])
       },
       max: 1024
     };
+  })
+  .controller('knobCtrl13', function ($scope) {
+    $scope.value = 100;
+	$scope.options = {
+		startAngle: -125,
+		endAngle: 125
+	};
   });

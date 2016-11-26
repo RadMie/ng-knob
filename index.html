@@ -152,6 +152,23 @@ $scope.options = {
             </div>
           </div>
           <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl13">
+              <div class="panel-heading">
+                <h3 class="panel-title">Flipped Knob <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                  <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 100;
+$scope.options = {
+  startAngle: -125,
+  endAngle: 125
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="item">
             <div class="panel panel-primary" ng-controller="knobCtrl2">
               <div class="panel-heading">
                 <h3 class="panel-title">Skin Tron <span class="badge pull-right label-warning">{{value}}</span></h3>
