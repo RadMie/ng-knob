@@ -56,7 +56,7 @@
 
     if (this.options.readOnly === false) {
       if (click) {
-        elem.on('click', click);
+        elem.on('mouseup', click);
       }
       if (drag) {
         elem.call(drag);
@@ -70,7 +70,7 @@
     }
 
     if (this.options.ontouchend) {
-      var touchend = this.options.ontouchend;
+      var ontouchend = this.options.ontouchend;
       elem.on("touchend", function () {
         ontouchend();
       });

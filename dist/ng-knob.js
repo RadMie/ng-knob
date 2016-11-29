@@ -37,7 +37,7 @@
         var elem = svg.append("path").attr("id", label).attr("d", arc).style(style).attr("transform", "translate(" + this.options.size / 2 + ", " + this.options.size / 2 + ")");
         if (this.options.readOnly === false) {
             if (click) {
-                elem.on("click", click);
+                elem.on("mouseup", click);
             }
             if (drag) {
                 elem.call(drag);
@@ -49,10 +49,10 @@
                 onmouseup();
             });
         }
-        if (this.options.touchend) {
-            var touchend = this.options.touchend;
+        if (this.options.ontouchend) {
+            var ontouchend = this.options.ontouchend;
             elem.on("touchend", function() {
-                touchend();
+                ontouchend();
             });
         }
         if (this.options.stopPropagation) {
