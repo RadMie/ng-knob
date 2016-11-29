@@ -1,7 +1,7 @@
 /*******************************************************
  * Name:          ng-knob
  * Description:   Angular.js Knob directive
- * Version:       0.1.4
+ * Version:       0.1.6
  * Homepage:      https://radmie.github.io/ng-knob
  * Licence:       MIT
  *******************************************************/
@@ -37,17 +37,11 @@
         var elem = svg.append("path").attr("id", label).attr("d", arc).style(style).attr("transform", "translate(" + this.options.size / 2 + ", " + this.options.size / 2 + ")");
         if (this.options.readOnly === false) {
             if (click) {
-                elem.on("mouseup", click);
+                elem.on("mousedown", click);
             }
             if (drag) {
                 elem.call(drag);
             }
-        }
-        if (this.options.onmouseup) {
-            var onmouseup = this.options.onmouseup;
-            elem.on("mouseup", function() {
-                onmouseup();
-            });
         }
         if (this.options.ontouchend) {
             var ontouchend = this.options.ontouchend;
@@ -278,6 +272,10 @@
                 if (isFinal) {
                     that.changeArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
                     that.changeElem.attr("d", that.changeArc);
+                    var onmouseup = that.options.onmouseup;
+                    if (onmouseup) {
+                        onmouseup();
+                    }
                 }
                 if (that.options.displayInput) {
                     var v = that.value;
