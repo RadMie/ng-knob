@@ -1,7 +1,7 @@
 /*******************************************************
  * Name:          ng-knob
  * Description:   Angular.js Knob directive
- * Version:       0.1.8
+ * Version:       0.1.9
  * Homepage:      https://radmie.github.io/ng-knob
  * Licence:       MIT
  *******************************************************/
@@ -50,6 +50,7 @@
                 d3.event.stopPropagation();
             });
             elem.on("touchstart", function() {
+                that.clicked = true;
                 d3.event.stopPropagation();
             });
         }

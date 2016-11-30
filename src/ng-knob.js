@@ -70,6 +70,7 @@
         d3.event.stopPropagation();
       });
       elem.on("touchstart", function () {
+         that.clicked = true;
         d3.event.stopPropagation();
       });
     }
