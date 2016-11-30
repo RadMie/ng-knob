@@ -64,7 +64,9 @@
     }
 
     if (this.options.stopPropagation) {
+      var that = this;
       elem.on("mousedown", function () {
+        that.clicked = true;
         d3.event.stopPropagation();
       });
       elem.on("touchstart", function () {
@@ -268,14 +270,11 @@
    */
   Knob.prototype.draw = function (update) {
     d3.select(this.element).select("svg").remove();
-    
+
     var that = this;
 
     that.createArcs();
 
-    d3.behavior.click().on("click", function () {
-      that.clicked = true;
-    });
 
     var dragBehavior = d3.behavior.drag()
       .on('drag', dragInteraction)

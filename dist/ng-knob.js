@@ -1,7 +1,7 @@
 /*******************************************************
  * Name:          ng-knob
  * Description:   Angular.js Knob directive
- * Version:       0.1.7
+ * Version:       0.1.8
  * Homepage:      https://radmie.github.io/ng-knob
  * Licence:       MIT
  *******************************************************/
@@ -44,7 +44,9 @@
             }
         }
         if (this.options.stopPropagation) {
+            var that = this;
             elem.on("mousedown", function() {
+                that.clicked = true;
                 d3.event.stopPropagation();
             });
             elem.on("touchstart", function() {
@@ -213,9 +215,6 @@
         d3.select(this.element).select("svg").remove();
         var that = this;
         that.createArcs();
-        d3.behavior.click().on("click", function() {
-            that.clicked = true;
-        });
         var dragBehavior = d3.behavior.drag().on("drag", dragInteraction).on("dragend", clickInteraction);
         that.drawArcs(clickInteraction, dragBehavior);
         if (that.options.animate.enabled) {
