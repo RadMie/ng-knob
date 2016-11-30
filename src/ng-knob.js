@@ -56,20 +56,13 @@
 
     if (this.options.readOnly === false) {
       if (click) {
-        elem.on('mousedown', click);
+        elem.on('click', click);
       }
       if (drag) {
         elem.call(drag);
       }
     }
 
-
-    if (this.options.ontouchend) {
-      var ontouchend = this.options.ontouchend;
-      elem.on("touchend", function () {
-        ontouchend();
-      });
-    }
     if (this.options.stopPropagation) {
       elem.on("mousedown", function () {
         d3.event.stopPropagation();
@@ -314,6 +307,9 @@
       var x = coords[0] - (that.options.size / 2);
       var y = coords[1] - (that.options.size / 2);
       interaction(x, y, true);
+      if (that.options.onmouseup) {
+        that.options.onmouseup();
+      }
     }
 
     function interaction(x, y, isFinal) {
@@ -341,10 +337,6 @@
         if (isFinal) {
           that.changeArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
           that.changeElem.attr('d', that.changeArc);
-          var onmouseup = that.options.onmouseup;
-          if (onmouseup) {
-            onmouseup();
-          }
         }
         if (that.options.displayInput) {
           var v = that.value;

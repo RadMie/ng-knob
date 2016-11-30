@@ -1,7 +1,7 @@
 /*******************************************************
  * Name:          ng-knob
  * Description:   Angular.js Knob directive
- * Version:       0.1.6
+ * Version:       0.1.7
  * Homepage:      https://radmie.github.io/ng-knob
  * Licence:       MIT
  *******************************************************/
@@ -37,17 +37,11 @@
         var elem = svg.append("path").attr("id", label).attr("d", arc).style(style).attr("transform", "translate(" + this.options.size / 2 + ", " + this.options.size / 2 + ")");
         if (this.options.readOnly === false) {
             if (click) {
-                elem.on("mousedown", click);
+                elem.on("click", click);
             }
             if (drag) {
                 elem.call(drag);
             }
-        }
-        if (this.options.ontouchend) {
-            var ontouchend = this.options.ontouchend;
-            elem.on("touchend", function() {
-                ontouchend();
-            });
         }
         if (this.options.stopPropagation) {
             elem.on("mousedown", function() {
@@ -248,6 +242,9 @@
             var x = coords[0] - that.options.size / 2;
             var y = coords[1] - that.options.size / 2;
             interaction(x, y, true);
+            if (that.options.onmouseup) {
+                that.options.onmouseup();
+            }
         }
         function interaction(x, y, isFinal) {
             var arc = Math.atan(y / x) / (Math.PI / 180), radians, delta;
@@ -272,10 +269,6 @@
                 if (isFinal) {
                     that.changeArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
                     that.changeElem.attr("d", that.changeArc);
-                    var onmouseup = that.options.onmouseup;
-                    if (onmouseup) {
-                        onmouseup();
-                    }
                 }
                 if (that.options.displayInput) {
                     var v = that.value;
