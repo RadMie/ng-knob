@@ -213,6 +213,9 @@
         d3.select(this.element).select("svg").remove();
         var that = this;
         that.createArcs();
+        d3.behavior.click().on("click", function() {
+            that.clicked = true;
+        });
         var dragBehavior = d3.behavior.drag().on("drag", dragInteraction).on("dragend", clickInteraction);
         that.drawArcs(clickInteraction, dragBehavior);
         if (that.options.animate.enabled) {
@@ -243,7 +246,10 @@
             var y = coords[1] - that.options.size / 2;
             interaction(x, y, true);
             if (that.options.onmouseup) {
-                that.options.onmouseup();
+                if (that.clicked) {
+                    that.clicked = false;
+                    that.options.onmouseup();
+                }
             }
         }
         function interaction(x, y, isFinal) {

@@ -268,9 +268,14 @@
    */
   Knob.prototype.draw = function (update) {
     d3.select(this.element).select("svg").remove();
+    
     var that = this;
 
     that.createArcs();
+
+    d3.behavior.click().on("click", function () {
+      that.clicked = true;
+    });
 
     var dragBehavior = d3.behavior.drag()
       .on('drag', dragInteraction)
@@ -308,7 +313,10 @@
       var y = coords[1] - (that.options.size / 2);
       interaction(x, y, true);
       if (that.options.onmouseup) {
-        that.options.onmouseup();
+        if (that.clicked) {
+          that.clicked = false;
+          that.options.onmouseup();
+        }
       }
     }
 
