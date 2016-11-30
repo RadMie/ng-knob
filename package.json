@@ -1,6 +1,6 @@
 {
   "name": "ng-knob",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Angular.js Knob directive",
   "homepage": "https://radmie.github.io/ng-knob",
   "devDependencies": {
