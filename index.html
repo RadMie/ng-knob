@@ -486,6 +486,12 @@ app.controller('knobCtrl', function ($scope) {
                   <td>false</td>
                   <td>Disabled change value (<code>true</code> or <code>false</code>)</td>
                 </tr>
+                 <tr>
+                  <td>stopPropagation</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Disabled mouse/touch event propagation (<code>true</code> or <code>false</code>)</td>
+                </tr>
                 <tr>
                   <td>trackWidth</td>
                   <td>integer</td>
@@ -581,6 +587,18 @@ app.controller('knobCtrl', function ($scope) {
                   <td>boolean</td>
                   <td>false</td>
                   <td>Dynamic change options (<code>true</code> or <code>false</code>)</td>
+                </tr>
+                 <tr>
+                  <td>onmouseup</td>
+                  <td>callback</td>
+                  <td>null</td>
+                  <td>Mouse up callback</td>
+                </tr>
+                <tr>
+                  <td>ontouchend</td>
+                  <td>callback</td>
+                  <td>null</td>
+                  <td>Touch end callback</td>
                 </tr>
               </tbody>
             </table>

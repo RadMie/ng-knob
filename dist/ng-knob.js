@@ -1,7 +1,7 @@
 /*******************************************************
  * Name:          ng-knob
  * Description:   Angular.js Knob directive
- * Version:       0.1.4
+ * Version:       0.2.1
  * Homepage:      https://radmie.github.io/ng-knob
  * Licence:       MIT
  *******************************************************/
@@ -35,13 +35,26 @@
     };
     Knob.prototype.drawArc = function(svg, arc, label, style, click, drag) {
         var elem = svg.append("path").attr("id", label).attr("d", arc).style(style).attr("transform", "translate(" + this.options.size / 2 + ", " + this.options.size / 2 + ")");
+        var that = this;
         if (this.options.readOnly === false) {
             if (click) {
                 elem.on("click", click);
             }
             if (drag) {
                 elem.call(drag);
+                drag.on("dragstart", function() {
+                    that.clicked = true;
+                });
             }
+        }
+        if (this.options.stopPropagation) {
+            elem.on("mousedown", function() {
+                that.clicked = true;
+                d3.event.stopPropagation();
+            });
+            elem.on("touchstart", function() {
+                d3.event.stopPropagation();
+            });
         }
         return elem;
     };
@@ -234,6 +247,12 @@
             var x = coords[0] - that.options.size / 2;
             var y = coords[1] - that.options.size / 2;
             interaction(x, y, true);
+            if (that.options.onmouseup) {
+                if (that.clicked) {
+                    that.clicked = false;
+                    that.options.onmouseup();
+                }
+            }
         }
         function interaction(x, y, isFinal) {
             var arc = Math.atan(y / x) / (Math.PI / 180), radians, delta;

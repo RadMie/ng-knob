@@ -1,12 +1,12 @@
 'use strict';
 
-(function(){
+(function () {
 
   var ui = {};
   /**
    *   Constructor
    */
-  var Knob = function(element, value, options) {
+  var Knob = function (element, value, options) {
     this.element = element;
     this.value = value;
     this.options = options;
@@ -15,82 +15,97 @@
   /**
    *   Convert from value to radians
    */
-  Knob.prototype.valueToRadians = function(value, valueEnd, angleEnd, angleStart, valueStart) {
+  Knob.prototype.valueToRadians = function (value, valueEnd, angleEnd, angleStart, valueStart) {
     valueEnd = valueEnd || 100;
     valueStart = valueStart || 0;
     angleEnd = angleEnd || 360;
     angleStart = angleStart || 0;
-    return (Math.PI/180) * ((((value - valueStart) * (angleEnd - angleStart)) / (valueEnd - valueStart)) + angleStart);
+    return (Math.PI / 180) * ((((value - valueStart) * (angleEnd - angleStart)) / (valueEnd - valueStart)) + angleStart);
   };
   /**
    *   Convert from radians to value
    */
-  Knob.prototype.radiansToValue = function(radians, valueEnd, valueStart, angleEnd, angleStart) {
+  Knob.prototype.radiansToValue = function (radians, valueEnd, valueStart, angleEnd, angleStart) {
     valueEnd = valueEnd || 100;
     valueStart = valueStart || 0;
     angleEnd = angleEnd || 360;
     angleStart = angleStart || 0;
-    return ((((((180/Math.PI) * radians) - angleStart) * (valueEnd - valueStart)) / (angleEnd - angleStart)) + valueStart);
+    return ((((((180 / Math.PI) * radians) - angleStart) * (valueEnd - valueStart)) / (angleEnd - angleStart)) + valueStart);
   };
   /**
    *   Create the arc
    */
-  Knob.prototype.createArc = function(innerRadius, outerRadius, startAngle, endAngle, cornerRadius) {
+  Knob.prototype.createArc = function (innerRadius, outerRadius, startAngle, endAngle, cornerRadius) {
     var arc = d3.svg.arc()
-    .innerRadius(innerRadius)
-    .outerRadius(outerRadius)
-    .startAngle(startAngle)
-    .endAngle(endAngle)
-    .cornerRadius(cornerRadius);
+      .innerRadius(innerRadius)
+      .outerRadius(outerRadius)
+      .startAngle(startAngle)
+      .endAngle(endAngle)
+      .cornerRadius(cornerRadius);
     return arc;
   };
   /**
    *   Draw the arc
    */
-  Knob.prototype.drawArc = function(svg, arc, label, style, click, drag) {
-    var elem = svg.append('path')
-    .attr('id', label)
-    .attr('d', arc)
-    .style(style)
-    .attr('transform', 'translate(' + (this.options.size / 2) + ', ' + (this.options.size / 2) + ')');
+  Knob.prototype.drawArc = function (svg, arc, label, style, click, drag) {
 
-    if(this.options.readOnly === false) {
+    var elem = svg.append('path')
+      .attr('id', label)
+      .attr('d', arc)
+      .style(style)
+      .attr('transform', 'translate(' + (this.options.size / 2) + ', ' + (this.options.size / 2) + ')');
+    var that = this;
+    if (this.options.readOnly === false) {
       if (click) {
         elem.on('click', click);
       }
       if (drag) {
         elem.call(drag);
+        drag.on("dragstart", function () {
+          that.clicked = true;
+        });
       }
+    }
+
+    if (this.options.stopPropagation) {
+   
+      elem.on("mousedown", function () {
+        that.clicked = true;
+        d3.event.stopPropagation();
+      });
+      elem.on("touchstart", function () {
+        d3.event.stopPropagation();
+      });
     }
     return elem;
   };
   /**
    *   Create the arcs
    */
-  Knob.prototype.createArcs = function() {
+  Knob.prototype.createArcs = function () {
     var outerRadius = parseInt((this.options.size / 2), 10),
-    startAngle = this.valueToRadians(this.options.startAngle, 360),
-    endAngle = this.valueToRadians(this.options.endAngle, 360);
-    if(this.options.scale.enabled) {
+      startAngle = this.valueToRadians(this.options.startAngle, 360),
+      endAngle = this.valueToRadians(this.options.endAngle, 360);
+    if (this.options.scale.enabled) {
       outerRadius -= this.options.scale.width + this.options.scale.spaceWidth;
     }
     var trackInnerRadius = outerRadius - this.options.trackWidth,
-    changeInnerRadius = outerRadius - this.options.barWidth,
-    valueInnerRadius = outerRadius - this.options.barWidth,
-    //interactInnerRadius = outerRadius - this.options.barWidth,
-    interactInnerRadius = 1,
+      changeInnerRadius = outerRadius - this.options.barWidth,
+      valueInnerRadius = outerRadius - this.options.barWidth,
+      //interactInnerRadius = outerRadius - this.options.barWidth,
+      interactInnerRadius = 1,
 
-    trackOuterRadius = outerRadius,
-    changeOuterRadius = outerRadius,
-    valueOuterRadius = outerRadius,
-    interactOuterRadius = outerRadius,
-    diff;
+      trackOuterRadius = outerRadius,
+      changeOuterRadius = outerRadius,
+      valueOuterRadius = outerRadius,
+      interactOuterRadius = outerRadius,
+      diff;
 
-    if(this.options.barWidth > this.options.trackWidth) {
+    if (this.options.barWidth > this.options.trackWidth) {
       diff = (this.options.barWidth - this.options.trackWidth) / 2;
       trackInnerRadius -= diff;
       trackOuterRadius -= diff;
-    } else if(this.options.barWidth < this.options.trackWidth) {
+    } else if (this.options.barWidth < this.options.trackWidth) {
       diff = (this.options.trackWidth - this.options.barWidth) / 2;
       changeOuterRadius -= diff;
       valueOuterRadius -= diff;
@@ -98,15 +113,15 @@
       valueInnerRadius -= diff;
       //interactInnerRadius = outerRadius - this.options.trackWidth;
     }
-    if(this.options.bgColor) {
-		if(this.options.bgFull){
-			this.bgArc = this.createArc(0, outerRadius, 0, Math.PI*2);
-		}
-		else{
-			this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
-		}
+    if (this.options.bgColor) {
+      if (this.options.bgFull) {
+        this.bgArc = this.createArc(0, outerRadius, 0, Math.PI * 2);
+      }
+      else {
+        this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
+      }
     }
-    if(this.options.skin.type === 'tron') {
+    if (this.options.skin.type === 'tron') {
       trackOuterRadius = trackOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
       changeOuterRadius = changeOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
       valueOuterRadius = valueOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
@@ -122,66 +137,66 @@
   /**
    *   Draw the arcs
    */
-  Knob.prototype.drawArcs = function(clickInteraction, dragBehavior) {
+  Knob.prototype.drawArcs = function (clickInteraction, dragBehavior) {
     var svg = d3.select(this.element)
-    .append('svg')
-    .attr("width", this.options.size)
-    .attr("height", this.options.size);
+      .append('svg')
+      .attr("width", this.options.size)
+      .attr("height", this.options.size);
 
-    if(this.options.bgColor) {
+    if (this.options.bgColor) {
       this.drawArc(svg, this.bgArc, 'bgArc', { "fill": this.options.bgColor });
     }
 
-    if(this.options.displayInput) {
-      var fontSize = (this.options.size*0.20) + "px";
-      if(this.options.fontSize !== 'auto') {
+    if (this.options.displayInput) {
+      var fontSize = (this.options.size * 0.20) + "px";
+      if (this.options.fontSize !== 'auto') {
         fontSize = this.options.fontSize + "px";
       }
-      if(this.options.step < 1) {
+      if (this.options.step < 1) {
         this.value = this.value.toFixed(1);
       }
       var v = this.value;
-      if (typeof this.options.inputFormatter === "function"){
-          v = this.options.inputFormatter(v);
+      if (typeof this.options.inputFormatter === "function") {
+        v = this.options.inputFormatter(v);
       }
       svg.append('text')
-      .attr('id', 'text')
-      .attr("text-anchor", "middle")
-      .attr("font-size", fontSize)
-      .style("fill", this.options.textColor)
-      .text(v + this.options.unit || "")
-      .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.06)) + ')');
+        .attr('id', 'text')
+        .attr("text-anchor", "middle")
+        .attr("font-size", fontSize)
+        .style("fill", this.options.textColor)
+        .text(v + this.options.unit || "")
+        .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size * 0.06)) + ')');
 
-      if(this.options.subText.enabled) {
-        fontSize = (this.options.size*0.07) + "px";
-        if(this.options.subText.font !== 'auto') {
+      if (this.options.subText.enabled) {
+        fontSize = (this.options.size * 0.07) + "px";
+        if (this.options.subText.font !== 'auto') {
           fontSize = this.options.subText.font + "px";
         }
         svg.append('text')
-        .attr('class', 'sub-text')
-        .attr("text-anchor", "middle")
-        .attr("font-size", fontSize)
-        .style("fill", this.options.subText.color)
-        .text(this.options.subText.text)
-        .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.15)) + ')');
+          .attr('class', 'sub-text')
+          .attr("text-anchor", "middle")
+          .attr("font-size", fontSize)
+          .style("fill", this.options.subText.color)
+          .text(this.options.subText.text)
+          .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size * 0.15)) + ')');
       }
     }
-    if(this.options.scale.enabled) {
+    if (this.options.scale.enabled) {
       var radius, quantity, count = 0, angle = 0, data,
-      startRadians = this.valueToRadians(this.options.min, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min),
-      endRadians = this.valueToRadians(this.options.max, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min),
-      diff = 0;
-      if(this.options.startAngle !== 0 || this.options.endAngle !== 360) {
+        startRadians = this.valueToRadians(this.options.min, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min),
+        endRadians = this.valueToRadians(this.options.max, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min),
+        diff = 0;
+      if (this.options.startAngle !== 0 || this.options.endAngle !== 360) {
         diff = 1;
       }
-      if(this.options.scale.type === 'dots') {
+      if (this.options.scale.type === 'dots') {
         var width = this.options.scale.width;
         radius = (this.options.size / 2) - width;
         quantity = this.options.scale.quantity;
         var offset = radius + this.options.scale.width;
         data = d3.range(quantity).map(function () {
           angle = (count * (endRadians - startRadians)) - (Math.PI / 2) + startRadians;
-          count = count + (1 / (quantity-diff));
+          count = count + (1 / (quantity - diff));
           return {
             cx: offset + Math.cos(angle) * radius,
             cy: offset + Math.sin(angle) * radius,
@@ -189,27 +204,27 @@
           };
         });
         svg.selectAll("circle")
-        .data(data)
-        .enter().append("circle")
-        .attr({
-          r: function (d) {
+          .data(data)
+          .enter().append("circle")
+          .attr({
+            r: function (d) {
               return d.r;
-          },
-          cx: function (d) {
+            },
+            cx: function (d) {
               return d.cx;
-          },
-          cy: function (d) {
+            },
+            cy: function (d) {
               return d.cy;
-          },
-          fill: this.options.scale.color
-        });
+            },
+            fill: this.options.scale.color
+          });
       } else if (this.options.scale.type === 'lines') {
         var height = this.options.scale.height;
         radius = (this.options.size / 2);
         quantity = this.options.scale.quantity;
         data = d3.range(quantity).map(function () {
           angle = (count * (endRadians - startRadians)) - (Math.PI / 2) + startRadians;
-          count = count + (1 / (quantity-diff));
+          count = count + (1 / (quantity - diff));
           return {
             x1: radius + Math.cos(angle) * radius,
             y1: radius + Math.sin(angle) * radius,
@@ -218,38 +233,38 @@
           };
         });
         svg.selectAll("line")
-        .data(data)
-        .enter().append("line")
-        .attr({
-          x1: function (d) {
+          .data(data)
+          .enter().append("line")
+          .attr({
+            x1: function (d) {
               return d.x1;
-          },
-          y1: function (d) {
+            },
+            y1: function (d) {
               return d.y1;
-          },
-          x2: function (d) {
+            },
+            x2: function (d) {
               return d.x2;
-          },
-          y2: function (d) {
+            },
+            y2: function (d) {
               return d.y2;
-          },
-          "stroke-width": this.options.scale.width,
-          "stroke": this.options.scale.color
-        });
+            },
+            "stroke-width": this.options.scale.width,
+            "stroke": this.options.scale.color
+          });
       }
     }
-    if(this.options.skin.type === 'tron') {
+    if (this.options.skin.type === 'tron') {
       this.drawArc(svg, this.hoopArc, 'hoopArc', { "fill": this.options.skin.color });
     }
     this.drawArc(svg, this.trackArc, 'trackArc', { "fill": this.options.trackColor });
-    if(this.options.displayPrevious) {
+    if (this.options.displayPrevious) {
       this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill": this.options.prevBarColor });
     } else {
       this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill-opacity": 0 });
     }
     this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', { "fill": this.options.barColor });
     var cursor = "pointer";
-    if(this.options.readOnly) {
+    if (this.options.readOnly) {
       cursor = "default";
     }
     this.drawArc(svg, this.interactArc, 'interactArc', { "fill-opacity": 0, "cursor": cursor }, clickInteraction, dragBehavior);
@@ -257,22 +272,24 @@
   /**
    *   Draw knob component
    */
-  Knob.prototype.draw = function(update) {
+  Knob.prototype.draw = function (update) {
     d3.select(this.element).select("svg").remove();
+
     var that = this;
 
     that.createArcs();
 
+
     var dragBehavior = d3.behavior.drag()
-    .on('drag', dragInteraction)
-    .on('dragend', clickInteraction);
+      .on('drag', dragInteraction)
+      .on('dragend', clickInteraction);
 
     that.drawArcs(clickInteraction, dragBehavior);
 
-    if(that.options.animate.enabled) {
-      that.valueElem.transition().ease(that.options.animate.ease).duration(that.options.animate.duration).tween('',function() {
+    if (that.options.animate.enabled) {
+      that.valueElem.transition().ease(that.options.animate.ease).duration(that.options.animate.duration).tween('', function () {
         var i = d3.interpolate(that.valueToRadians(that.options.startAngle, 360), that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
-        return function(t) {
+        return function (t) {
           var val = i(t);
           that.valueElem.attr('d', that.valueArc.endAngle(val));
           that.changeElem.attr('d', that.changeArc.endAngle(val));
@@ -289,7 +306,7 @@
       that.inDrag = true;
       var x = d3.event.x - (that.options.size / 2);
       var y = d3.event.y - (that.options.size / 2);
-      interaction(x,y, false);
+      interaction(x, y, false);
     }
 
     function clickInteraction() {
@@ -297,26 +314,32 @@
       var coords = d3.mouse(this.parentNode);
       var x = coords[0] - (that.options.size / 2);
       var y = coords[1] - (that.options.size / 2);
-      interaction(x,y, true);
+      interaction(x, y, true);
+      if (that.options.onmouseup) {
+        if (that.clicked) {
+          that.clicked = false;
+          that.options.onmouseup();
+        }
+      }
     }
 
-    function interaction(x,y, isFinal) {
-      var arc = Math.atan(y/x)/(Math.PI/180), radians, delta;
+    function interaction(x, y, isFinal) {
+      var arc = Math.atan(y / x) / (Math.PI / 180), radians, delta;
 
       if ((x >= 0 && y <= 0) || (x >= 0 && y >= 0)) {
         delta = 90;
       } else {
         delta = 270;
-        if(that.options.startAngle < 0) {
+        if (that.options.startAngle < 0) {
           delta = -90;
         }
       }
 
-      radians = (delta + arc) * (Math.PI/180);
+      radians = (delta + arc) * (Math.PI / 180);
       that.value = that.radiansToValue(radians, that.options.max, that.options.min, that.options.endAngle, that.options.startAngle);
-      if(that.value >= that.options.min && that.value <= that.options.max) {
-        that.value = Math.round(((~~ (((that.value < 0) ? -0.5 : 0.5) + (that.value/that.options.step))) * that.options.step) * 100) / 100;
-        if(that.options.step < 1) {
+      if (that.value >= that.options.min && that.value <= that.options.max) {
+        that.value = Math.round(((~~(((that.value < 0) ? -0.5 : 0.5) + (that.value / that.options.step))) * that.options.step) * 100) / 100;
+        if (that.options.step < 1) {
           that.value = that.value.toFixed(1);
         }
         update(that.value);
@@ -326,9 +349,9 @@
           that.changeArc.endAngle(that.valueToRadians(that.value, that.options.max, that.options.endAngle, that.options.startAngle, that.options.min));
           that.changeElem.attr('d', that.changeArc);
         }
-        if(that.options.displayInput) {
+        if (that.options.displayInput) {
           var v = that.value;
-          if (typeof that.options.inputFormatter === "function"){
+          if (typeof that.options.inputFormatter === "function") {
             v = that.options.inputFormatter(v);
           }
           d3.select(that.element).select('#text').text(v + that.options.unit || "");
@@ -339,20 +362,20 @@
   /**
    *   Set a value
    */
-  Knob.prototype.setValue = function(newValue) {
+  Knob.prototype.setValue = function (newValue) {
     if ((!this.inDrag) && this.value >= this.options.min && this.value <= this.options.max) {
       var radians = this.valueToRadians(newValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
-      this.value = Math.round(((~~ (((newValue < 0) ? -0.5 : 0.5) + (newValue/this.options.step))) * this.options.step) * 100) / 100;
-      if(this.options.step < 1) {
+      this.value = Math.round(((~~(((newValue < 0) ? -0.5 : 0.5) + (newValue / this.options.step))) * this.options.step) * 100) / 100;
+      if (this.options.step < 1) {
         this.value = this.value.toFixed(1);
       }
       this.changeArc.endAngle(radians);
       d3.select(this.element).select('#changeArc').attr('d', this.changeArc);
       this.valueArc.endAngle(radians);
       d3.select(this.element).select('#valueArc').attr('d', this.valueArc);
-      if(this.options.displayInput) {
+      if (this.options.displayInput) {
         var v = this.value;
-        if (typeof this.options.inputFormatter === "function"){
+        if (typeof this.options.inputFormatter === "function") {
           v = this.options.inputFormatter(v);
         }
         d3.select(this.element).select('#text').text(v + this.options.unit || "");
@@ -364,8 +387,8 @@
   /**
    *   Angular knob directive
    */
-  ui.knobDirective = function() {
-    return  {
+  ui.knobDirective = function () {
+    return {
       restrict: 'E',
       scope: {
         value: '=',
@@ -390,7 +413,7 @@
           endAngle: 360,
           unit: "",
           displayInput: true,
-          inputFormatter: function(v){ return v; },
+          inputFormatter: function (v) { return v; },
           readOnly: false,
           trackWidth: 50,
           barWidth: 50,
@@ -399,7 +422,7 @@
           prevBarColor: "rgba(0,0,0,0)",
           textColor: '#222',
           barCap: 0,
-		  trackCap: 0,
+          trackCap: 0,
           fontSize: 'auto',
           subText: {
             enabled: false,
@@ -408,7 +431,7 @@
             font: "auto"
           },
           bgColor: '',
-		  bgFull: false,
+          bgFull: false,
           scale: {
             enabled: false,
             type: 'lines',
@@ -423,32 +446,32 @@
           min: 0,
           max: 100,
           dynamicOptions: false
-				};
+        };
         scope.options = angular.merge(defaultOptions, scope.options);
         var knob = new ui.Knob(element[0], scope.value, scope.options);
 
-        scope.$watch('value', function(newValue, oldValue) {
-          if((newValue !== null || typeof newValue !== 'undefined') && typeof oldValue !== 'undefined' && newValue !== oldValue) {
+        scope.$watch('value', function (newValue, oldValue) {
+          if ((newValue !== null || typeof newValue !== 'undefined') && typeof oldValue !== 'undefined' && newValue !== oldValue) {
             knob.setValue(newValue);
           }
         });
 
-        if(scope.options.dynamicOptions) {
+        if (scope.options.dynamicOptions) {
           var isFirstWatchOnOptions = true;
-          scope.$watch('options', function() {
-              if (isFirstWatchOnOptions) {
-                isFirstWatchOnOptions = false;
-              } else {
-                var newOptions = angular.merge(defaultOptions, scope.options);
-                knob = new ui.Knob(element[0], scope.value, newOptions);
-                drawKnob();
-              }
+          scope.$watch('options', function () {
+            if (isFirstWatchOnOptions) {
+              isFirstWatchOnOptions = false;
+            } else {
+              var newOptions = angular.merge(defaultOptions, scope.options);
+              knob = new ui.Knob(element[0], scope.value, newOptions);
+              drawKnob();
+            }
           }, true);
         }
 
-        var drawKnob = function(){
-          knob.draw(function(value) {
-            scope.$apply(function() {
+        var drawKnob = function () {
+          knob.draw(function (value) {
+            scope.$apply(function () {
               scope.value = value;
             });
           });
