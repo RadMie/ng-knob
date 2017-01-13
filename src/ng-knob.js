@@ -339,23 +339,36 @@
   /**
    *   Set a value
    */
-  Knob.prototype.setValue = function(newValue) {
+  Knob.prototype.setValue = function(newValue, newSubText) {
     if ((!this.inDrag) && this.value >= this.options.min && this.value <= this.options.max) {
       var radians = this.valueToRadians(newValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
       this.value = Math.round(((~~ (((newValue < 0) ? -0.5 : 0.5) + (newValue/this.options.step))) * this.options.step) * 100) / 100;
       if(this.options.step < 1) {
         this.value = this.value.toFixed(1);
       }
+      // See if argument was provided
+      if(typeof newSubText !== "undefined") {
+      	// Override the option setting for subText
+        this.options.subText = newSubText;
+      }
       this.changeArc.endAngle(radians);
       d3.select(this.element).select('#changeArc').attr('d', this.changeArc);
       this.valueArc.endAngle(radians);
       d3.select(this.element).select('#valueArc').attr('d', this.valueArc);
+        console.log(this.options);
       if(this.options.displayInput) {
         var v = this.value;
         if (typeof this.options.inputFormatter === "function"){
           v = this.options.inputFormatter(v);
         }
         d3.select(this.element).select('#text').text(v + this.options.unit || "");
+
+		// Update it appropriately
+        if(this.options.subText.enabled) {
+            d3.select(this.element).select('#subtext').text(this.options.subText.text || "");
+        }
+      } else {
+          console.log('displayinput disabled');
       }
     }
   };
@@ -422,39 +435,88 @@
           displayPrevious: false,
           min: 0,
           max: 100,
-          dynamicOptions: false
+          dynamicOptions: false,
+          autoSize: false,
+          parentContainer: null
 				};
-        scope.options = angular.merge(defaultOptions, scope.options);
-        var knob = new ui.Knob(element[0], scope.value, scope.options);
+        
+		// Change the default options here, as the initially provided scope.options may not be extensive during later updates, and we have to wait for document ready
+        scope.defaultOptions = angular.merge(defaultOptions, scope.options);
 
-        scope.$watch('value', function(newValue, oldValue) {
-          if((newValue !== null || typeof newValue !== 'undefined') && typeof oldValue !== 'undefined' && newValue !== oldValue) {
-            knob.setValue(newValue);
-          }
-        });
+        // Lets wait for the document to load so we know div sizes etc in the DOM
+        angular.element(document).ready(function() {
 
-        if(scope.options.dynamicOptions) {
-          var isFirstWatchOnOptions = true;
-          scope.$watch('options', function() {
-              if (isFirstWatchOnOptions) {
-                isFirstWatchOnOptions = false;
-              } else {
-                var newOptions = angular.merge(defaultOptions, scope.options);
-                knob = new ui.Knob(element[0], scope.value, newOptions);
-                drawKnob();
-              }
-          }, true);
-        }
+            // We need to merge here with the 'defaults' as scope.options may be sparse
+            scope.options = angular.merge(defaultOptions, scope.options);
 
-        var drawKnob = function(){
-          knob.draw(function(value) {
-            scope.$apply(function() {
-              scope.value = value;
+            if (scope.options.autoSize && scope.options.parentContainer !== null) {
+            
+            console.log('trying to lookup ' +  scope.options.parentContainer);
+
+                var rect = d3.select('#' + scope.options.parentContainer).node().getBoundingClientRect();
+
+				// Choose the smallest dimension available
+                if (rect.height < rect.width){
+                    scope.options.size = rect.height;
+                } else {
+                    scope.options.size = rect.width;
+                }
+                //console.log("knob setting size to " + scope.options.size);
+            }
+
+            var knob = new ui.Knob(element[0], scope.value, scope.options);
+
+            scope.$watch('value', function (newValue, oldValue) {
+                if ((newValue !== null || typeof newValue !== 'undefined') && typeof oldValue !== 'undefined' && newValue !== oldValue) {
+                    knob.setValue(newValue);
+                }
             });
-          });
-        };
 
-        drawKnob();
+            if (scope.options.dynamicOptions) {
+                var isFirstWatchOnOptions = true;
+                scope.$watch('options', function () {
+                    if (isFirstWatchOnOptions) {
+                        isFirstWatchOnOptions = false;
+                    } else {
+                        // Get the list of option keys passed
+                        var objKeys = Object.keys(scope.options);
+
+                        // Lets loop through the option keys, handling them until we can't
+                        for (var i = 0; i < objKeys.length; i++) {
+                            //console.log(objKeys);
+                            if (objKeys[i] === 'subText') {
+                                // Merge it in so we don't lose 'enabled' and colors etc
+                                scope.options.subText = angular.merge(defaultOptions.subText, scope.options.subText);
+                                // Simply update interface
+                                knob.setValue(scope.value, scope.options.subText);
+                            }
+                            else if (objKeys[i] === 'barColor') {
+                                // Simply update interface
+                                knob.setBarColor(scope.options.barColor);
+                            }
+                            else {
+                                var newOptions = angular.merge(defaultOptions, scope.options);
+                                knob = new ui.Knob(element[0], scope.value, newOptions);
+                                drawKnob();
+                                // Break out of the loop as we've completely redrawn
+                                break;
+                            }
+                        }
+
+                    }
+                }, true);
+            }
+
+            var drawKnob = function () {
+                knob.draw(function (value) {
+                    scope.$apply(function () {
+                        scope.value = value;
+                    });
+                });
+            };
+
+            drawKnob();
+        });        
 
       }
     };
