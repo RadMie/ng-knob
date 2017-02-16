@@ -449,13 +449,10 @@
             // We need to merge here with the 'defaults' as scope.options may be sparse
             scope.options = angular.merge(defaultOptions, scope.options);
 
-            if (scope.options.autoSize && scope.options.parentContainer !== null) {
-            
-            console.log('trying to lookup ' +  scope.options.parentContainer);
+            if (scope.options.responsive) {
+                var rect = d3.select('#ngknob').node().getBoundingClientRect();
 
-                var rect = d3.select('#' + scope.options.parentContainer).node().getBoundingClientRect();
-
-				// Choose the smallest dimension available
+                // We want the smallest dimension
                 if (rect.height < rect.width){
                     scope.options.size = rect.height;
                 } else {
