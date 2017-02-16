@@ -269,23 +269,32 @@
             }
         }
     };
-    Knob.prototype.setValue = function(newValue) {
+    Knob.prototype.setValue = function(newValue, newSubText) {
         if (!this.inDrag && this.value >= this.options.min && this.value <= this.options.max) {
             var radians = this.valueToRadians(newValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
             this.value = Math.round(~~((newValue < 0 ? -.5 : .5) + newValue / this.options.step) * this.options.step * 100) / 100;
             if (this.options.step < 1) {
                 this.value = this.value.toFixed(1);
             }
+            if (typeof newSubText !== "undefined") {
+                this.options.subText = newSubText;
+            }
             this.changeArc.endAngle(radians);
             d3.select(this.element).select("#changeArc").attr("d", this.changeArc);
             this.valueArc.endAngle(radians);
             d3.select(this.element).select("#valueArc").attr("d", this.valueArc);
+            console.log(this.options);
             if (this.options.displayInput) {
                 var v = this.value;
                 if (typeof this.options.inputFormatter === "function") {
                     v = this.options.inputFormatter(v);
                 }
                 d3.select(this.element).select("#text").text(v + this.options.unit || "");
+                if (this.options.subText.enabled) {
+                    d3.select(this.element).select("#subtext").text(this.options.subText.text || "");
+                }
+            } else {
+                console.log("displayinput disabled");
             }
         }
     };
@@ -350,35 +359,60 @@
                     displayPrevious: false,
                     min: 0,
                     max: 100,
-                    dynamicOptions: false
+                    dynamicOptions: false,
+                    autoSize: false,
+                    parentContainer: null
                 };
-                scope.options = angular.merge(defaultOptions, scope.options);
-                var knob = new ui.Knob(element[0], scope.value, scope.options);
-                scope.$watch("value", function(newValue, oldValue) {
-                    if ((newValue !== null || typeof newValue !== "undefined") && typeof oldValue !== "undefined" && newValue !== oldValue) {
-                        knob.setValue(newValue);
-                    }
-                });
-                if (scope.options.dynamicOptions) {
-                    var isFirstWatchOnOptions = true;
-                    scope.$watch("options", function() {
-                        if (isFirstWatchOnOptions) {
-                            isFirstWatchOnOptions = false;
+                scope.defaultOptions = angular.merge(defaultOptions, scope.options);
+                angular.element(document).ready(function() {
+                    scope.options = angular.merge(defaultOptions, scope.options);
+                    if (scope.options.autoSize && scope.options.parentContainer !== null) {
+                        console.log("trying to lookup " + scope.options.parentContainer);
+                        var rect = d3.select("#" + scope.options.parentContainer).node().getBoundingClientRect();
+                        if (rect.height < rect.width) {
+                            scope.options.size = rect.height;
                         } else {
-                            var newOptions = angular.merge(defaultOptions, scope.options);
-                            knob = new ui.Knob(element[0], scope.value, newOptions);
-                            drawKnob();
+                            scope.options.size = rect.width;
                         }
-                    }, true);
-                }
-                var drawKnob = function() {
-                    knob.draw(function(value) {
-                        scope.$apply(function() {
-                            scope.value = value;
-                        });
+                    }
+                    var knob = new ui.Knob(element[0], scope.value, scope.options);
+                    scope.$watch("value", function(newValue, oldValue) {
+                        if ((newValue !== null || typeof newValue !== "undefined") && typeof oldValue !== "undefined" && newValue !== oldValue) {
+                            knob.setValue(newValue);
+                        }
                     });
-                };
-                drawKnob();
+                    if (scope.options.dynamicOptions) {
+                        var isFirstWatchOnOptions = true;
+                        scope.$watch("options", function() {
+                            if (isFirstWatchOnOptions) {
+                                isFirstWatchOnOptions = false;
+                            } else {
+                                var objKeys = Object.keys(scope.options);
+                                for (var i = 0; i < objKeys.length; i++) {
+                                    if (objKeys[i] === "subText") {
+                                        scope.options.subText = angular.merge(defaultOptions.subText, scope.options.subText);
+                                        knob.setValue(scope.value, scope.options.subText);
+                                    } else if (objKeys[i] === "barColor") {
+                                        knob.setBarColor(scope.options.barColor);
+                                    } else {
+                                        var newOptions = angular.merge(defaultOptions, scope.options);
+                                        knob = new ui.Knob(element[0], scope.value, newOptions);
+                                        drawKnob();
+                                        break;
+                                    }
+                                }
+                            }
+                        }, true);
+                    }
+                    var drawKnob = function() {
+                        knob.draw(function(value) {
+                            scope.$apply(function() {
+                                scope.value = value;
+                            });
+                        });
+                    };
+                    drawKnob();
+                });
             }
         };
     };

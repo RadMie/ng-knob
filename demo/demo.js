@@ -184,4 +184,12 @@ angular.module('KnobDemoApp', ['ui.knob'])
       },
       max: 1024
     };
-  });
+  })
+  .controller('knobCtrl13', function ($scope) {
+    $scope.value = 65;
+    $scope.options = {
+      autoSize: true,
+      parentContainer: "ngknob13"
+    };
+  })
+  ;
