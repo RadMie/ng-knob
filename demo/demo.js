@@ -184,4 +184,19 @@ angular.module('KnobDemoApp', ['ui.knob'])
       },
       max: 1024
     };
+  })
+  .controller('knobCtrl13', function ($scope) {
+    $scope.value = 65;
+    $scope.options = {
+      trackColor: 'rgba(52,152,219,.1)',
+      barColor: function (value) {
+        if (value >= 70) {
+          return 'rgba(0,255,0,.5)';
+        }
+
+        return 'rgba(255,0,0,.5)';
+      },
+      trackWidth: 15,
+      barWidth: 15
+    };
   });

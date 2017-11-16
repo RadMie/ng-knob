@@ -81,11 +81,17 @@
         this.valueArc = this.createArc(valueInnerRadius, valueOuterRadius, startAngle, startAngle, this.options.barCap);
         this.interactArc = this.createArc(interactInnerRadius, interactOuterRadius, startAngle, endAngle);
     };
+    var getColor = function(color, value) {
+        if (typeof color !== "function") {
+            return color;
+        }
+        return color(value);
+    };
     Knob.prototype.drawArcs = function(clickInteraction, dragBehavior) {
         var svg = d3.select(this.element).append("svg").attr("width", this.options.size).attr("height", this.options.size);
         if (this.options.bgColor) {
             this.drawArc(svg, this.bgArc, "bgArc", {
-                fill: this.options.bgColor
+                fill: getColor(this.options.bgColor, this.value)
             });
         }
         if (this.options.displayInput) {
@@ -100,13 +106,13 @@
             if (typeof this.options.inputFormatter === "function") {
                 v = this.options.inputFormatter(v);
             }
-            svg.append("text").attr("id", "text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.options.textColor).text(v + this.options.unit || "").attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .06) + ")");
+            svg.append("text").attr("id", "text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", getColor(this.options.textColor, this.value)).text(v + this.options.unit || "").attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .06) + ")");
             if (this.options.subText.enabled) {
                 fontSize = this.options.size * .07 + "px";
                 if (this.options.subText.font !== "auto") {
                     fontSize = this.options.subText.font + "px";
                 }
-                svg.append("text").attr("class", "sub-text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", this.options.subText.color).text(this.options.subText.text).attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .15) + ")");
+                svg.append("text").attr("class", "sub-text").attr("text-anchor", "middle").attr("font-size", fontSize).style("fill", getColor(this.options.subText.color, this.value)).text(this.options.subText.text).attr("transform", "translate(" + this.options.size / 2 + ", " + (this.options.size / 2 + this.options.size * .15) + ")");
             }
         }
         if (this.options.scale.enabled) {
@@ -138,7 +144,7 @@
                     cy: function(d) {
                         return d.cy;
                     },
-                    fill: this.options.scale.color
+                    fill: getColor(this.options.scale.color, this.value)
                 });
             } else if (this.options.scale.type === "lines") {
                 var height = this.options.scale.height;
@@ -168,21 +174,21 @@
                         return d.y2;
                     },
                     "stroke-width": this.options.scale.width,
-                    stroke: this.options.scale.color
+                    stroke: getColor(this.options.scale.color, this.value)
                 });
             }
         }
         if (this.options.skin.type === "tron") {
             this.drawArc(svg, this.hoopArc, "hoopArc", {
-                fill: this.options.skin.color
+                fill: getColor(this.options.skin.color, this.value)
             });
         }
         this.drawArc(svg, this.trackArc, "trackArc", {
-            fill: this.options.trackColor
+            fill: getColor(this.options.trackColor, this.value)
         });
         if (this.options.displayPrevious) {
             this.changeElem = this.drawArc(svg, this.changeArc, "changeArc", {
-                fill: this.options.prevBarColor
+                fill: getColor(this.options.prevBarColor, this.value)
             });
         } else {
             this.changeElem = this.drawArc(svg, this.changeArc, "changeArc", {
@@ -190,7 +196,7 @@
             });
         }
         this.valueElem = this.drawArc(svg, this.valueArc, "valueArc", {
-            fill: this.options.barColor
+            fill: getColor(this.options.barColor, this.value)
         });
         var cursor = "pointer";
         if (this.options.readOnly) {
@@ -270,23 +276,29 @@
         }
     };
     Knob.prototype.setValue = function(newValue) {
-        if (!this.inDrag && this.value >= this.options.min && this.value <= this.options.max) {
-            var radians = this.valueToRadians(newValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
-            this.value = Math.round(~~((newValue < 0 ? -.5 : .5) + newValue / this.options.step) * this.options.step * 100) / 100;
-            if (this.options.step < 1) {
-                this.value = this.value.toFixed(1);
-            }
-            this.changeArc.endAngle(radians);
-            d3.select(this.element).select("#changeArc").attr("d", this.changeArc);
-            this.valueArc.endAngle(radians);
-            d3.select(this.element).select("#valueArc").attr("d", this.valueArc);
-            if (this.options.displayInput) {
-                var v = this.value;
-                if (typeof this.options.inputFormatter === "function") {
-                    v = this.options.inputFormatter(v);
+        if (this.value >= this.options.min && this.value <= this.options.max) {
+            var changeArcElement = d3.select(this.element).select("#changeArc");
+            var valueArcElement = d3.select(this.element).select("#valueArc");
+            if (!this.inDrag) {
+                var radians = this.valueToRadians(newValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
+                this.value = Math.round(~~((newValue < 0 ? -.5 : .5) + newValue / this.options.step) * this.options.step * 100) / 100;
+                if (this.options.step < 1) {
+                    this.value = this.value.toFixed(1);
                 }
-                d3.select(this.element).select("#text").text(v + this.options.unit || "");
+                this.changeArc.endAngle(radians);
+                changeArcElement.attr("d", this.changeArc).style("fill", getColor(this.options.prevBarColor, this.value));
+                this.valueArc.endAngle(radians);
+                valueArcElement.attr("d", this.valueArc).style("fill", getColor(this.options.barColor, this.value));
+                if (this.options.displayInput) {
+                    var v = this.value;
+                    if (typeof this.options.inputFormatter === "function") {
+                        v = this.options.inputFormatter(v);
+                    }
+                    d3.select(this.element).select("#text").text(v + this.options.unit || "");
+                }
             }
+            changeArcElement.style("fill", getColor(this.options.prevBarColor, this.value));
+            valueArcElement.style("fill", getColor(this.options.barColor, this.value));
         }
     };
     ui.Knob = Knob;

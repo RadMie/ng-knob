@@ -120,6 +120,16 @@
     this.interactArc = this.createArc(interactInnerRadius, interactOuterRadius, startAngle, endAngle);
   };
   /**
+   *   Handle color parameters, according to the value when applicable
+   */
+  var getColor = function (color, value) {
+    if (typeof color !== 'function') {
+      return color;
+    }
+
+    return color(value);
+  };
+  /**
    *   Draw the arcs
    */
   Knob.prototype.drawArcs = function(clickInteraction, dragBehavior) {
@@ -129,7 +139,7 @@
     .attr("height", this.options.size);
 
     if(this.options.bgColor) {
-      this.drawArc(svg, this.bgArc, 'bgArc', { "fill": this.options.bgColor });
+      this.drawArc(svg, this.bgArc, 'bgArc', { "fill": getColor(this.options.bgColor, this.value) });
     }
 
     if(this.options.displayInput) {
@@ -148,7 +158,7 @@
       .attr('id', 'text')
       .attr("text-anchor", "middle")
       .attr("font-size", fontSize)
-      .style("fill", this.options.textColor)
+      .style("fill", getColor(this.options.textColor, this.value))
       .text(v + this.options.unit || "")
       .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.06)) + ')');
 
@@ -161,7 +171,7 @@
         .attr('class', 'sub-text')
         .attr("text-anchor", "middle")
         .attr("font-size", fontSize)
-        .style("fill", this.options.subText.color)
+        .style("fill", getColor(this.options.subText.color, this.value))
         .text(this.options.subText.text)
         .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.15)) + ')');
       }
@@ -201,7 +211,7 @@
           cy: function (d) {
               return d.cy;
           },
-          fill: this.options.scale.color
+          fill: getColor(this.options.scale.color, this.value)
         });
       } else if (this.options.scale.type === 'lines') {
         var height = this.options.scale.height;
@@ -234,20 +244,20 @@
               return d.y2;
           },
           "stroke-width": this.options.scale.width,
-          "stroke": this.options.scale.color
+          "stroke": getColor(this.options.scale.color, this.value)
         });
       }
     }
     if(this.options.skin.type === 'tron') {
-      this.drawArc(svg, this.hoopArc, 'hoopArc', { "fill": this.options.skin.color });
+      this.drawArc(svg, this.hoopArc, 'hoopArc', { "fill": getColor(this.options.skin.color, this.value) });
     }
-    this.drawArc(svg, this.trackArc, 'trackArc', { "fill": this.options.trackColor });
+    this.drawArc(svg, this.trackArc, 'trackArc', { "fill": getColor(this.options.trackColor, this.value) });
     if(this.options.displayPrevious) {
-      this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill": this.options.prevBarColor });
+      this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill": getColor(this.options.prevBarColor, this.value) });
     } else {
       this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill-opacity": 0 });
     }
-    this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', { "fill": this.options.barColor });
+    this.valueElem = this.drawArc(svg, this.valueArc, 'valueArc', { "fill": getColor(this.options.barColor, this.value) });
     var cursor = "pointer";
     if(this.options.readOnly) {
       cursor = "default";
@@ -340,23 +350,31 @@
    *   Set a value
    */
   Knob.prototype.setValue = function(newValue) {
-    if ((!this.inDrag) && this.value >= this.options.min && this.value <= this.options.max) {
-      var radians = this.valueToRadians(newValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
-      this.value = Math.round(((~~ (((newValue < 0) ? -0.5 : 0.5) + (newValue/this.options.step))) * this.options.step) * 100) / 100;
-      if(this.options.step < 1) {
-        this.value = this.value.toFixed(1);
-      }
-      this.changeArc.endAngle(radians);
-      d3.select(this.element).select('#changeArc').attr('d', this.changeArc);
-      this.valueArc.endAngle(radians);
-      d3.select(this.element).select('#valueArc').attr('d', this.valueArc);
-      if(this.options.displayInput) {
-        var v = this.value;
-        if (typeof this.options.inputFormatter === "function"){
-          v = this.options.inputFormatter(v);
+    if (this.value >= this.options.min && this.value <= this.options.max) {
+      var changeArcElement = d3.select(this.element).select('#changeArc');
+      var valueArcElement = d3.select(this.element).select('#valueArc');
+
+      if (!this.inDrag) {
+        var radians = this.valueToRadians(newValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
+        this.value = Math.round(((~~(((newValue < 0) ? -0.5 : 0.5) + (newValue / this.options.step))) * this.options.step) * 100) / 100;
+        if (this.options.step < 1) {
+          this.value = this.value.toFixed(1);
         }
-        d3.select(this.element).select('#text').text(v + this.options.unit || "");
+        this.changeArc.endAngle(radians);
+        changeArcElement.attr('d', this.changeArc).style('fill', getColor(this.options.prevBarColor, this.value));
+        this.valueArc.endAngle(radians);
+        valueArcElement.attr('d', this.valueArc).style('fill', getColor(this.options.barColor, this.value));
+        if (this.options.displayInput) {
+          var v = this.value;
+          if (typeof this.options.inputFormatter === "function") {
+            v = this.options.inputFormatter(v);
+          }
+          d3.select(this.element).select('#text').text(v + this.options.unit || "");
+        }
       }
+
+      changeArcElement.style('fill', getColor(this.options.prevBarColor, this.value));
+      valueArcElement.style('fill', getColor(this.options.barColor, this.value));
     }
   };
 
