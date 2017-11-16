@@ -357,6 +357,31 @@ $scope.options = {
               </div>
             </div>
           </div>
+          <div class="item">
+            <div class="panel panel-primary" ng-controller="knobCtrl13">
+              <div class="panel-heading">
+                <h3 class="panel-title">Dynamic colors <span class="badge pull-right label-warning">{{value}}</span></h3>
+              </div>
+              <div class="panel-body text-center">
+                <ui-knob value="value" options="options"></ui-knob>
+              </div>
+              <div class="panel-footer">
+<pre>$scope.value = 65;
+$scope.options = {
+  trackColor: 'rgba(52,152,219,.1)',
+  barColor: function (value) {
+    if (value >= 70) {
+      return 'rgba(0,255,0,.5)';
+    }
+
+    return 'rgba(255,0,0,.5)';
+  },
+  trackWidth: 15,
+  barWidth: 15
+};</pre>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
